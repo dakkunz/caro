@@ -1,7 +1,6 @@
 // libs
 import AuthProvider from "@/providers/AuthProvider";
 import React from "react";
-// components
 
 const providers = [AuthProvider];
 

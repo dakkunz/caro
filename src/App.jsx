@@ -1,12 +1,20 @@
-import Fab from "@/components/Fab";
-import Home from "@/pages/Home";
-import AppProviders from "@/providers";
+// libs
 import React from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+// providers
+import AppProviders from "@/providers";
+// others
+import appRoutes from "@/routers";
 
 const App = () => (
 	<AppProviders>
-		<Home />
-		<Fab />
+		<BrowserRouter>
+			<Switch>
+				{appRoutes.map((route) => (
+					<Route {...route} />
+				))}
+			</Switch>
+		</BrowserRouter>
 	</AppProviders>
 );
 export default App;

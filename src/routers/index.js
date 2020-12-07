@@ -1,31 +1,32 @@
-// libs
 import React from "react";
-// pages
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
-import Home from "@/pages/Home";
-import NotFound from "@/pages/NotFound";
+import { Home, Login, Register, NotFound } from "@/routers/lazyRoutes";
+import { Redirect } from "react-router-dom";
 
 const appRoutes = [
 	{
 		key: "login",
 		path: "/login",
-		render: () => <Login />,
+		component: Login,
 	},
 	{
 		key: "register",
 		path: "/register",
-		render: () => <Register />,
+		component: Register,
+	},
+	{
+		key: "not-found",
+		path: "/not-found",
+		component: NotFound,
 	},
 	{
 		key: "home",
 		path: "/",
-		render: () => <Home />,
+		component: Home,
 		exact: true,
 	},
 	{
-		key: "notfound",
-		render: () => <NotFound />,
+		key: "404",
+		render: () => <Redirect to="/not-found" />,
 	},
 ];
 

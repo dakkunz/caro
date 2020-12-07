@@ -1,0 +1,14 @@
+.loading-indicator-wrapper {
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	.loading-icon {
+		font-size: 60px;
+	}
+	.ant-spin-text {
+		margin-top: 10px;
+		color: #242424;
+		font-size: 20px;
+	}
+}

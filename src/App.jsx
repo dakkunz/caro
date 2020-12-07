@@ -1,7 +1,12 @@
+import Fab from "@/components/Fab";
+import Home from "@/pages/Home";
+import AppProviders from "@/providers";
 import React from "react";
 
-const App = () => {
-  return <div className="App"></div>;
-};
-
+const App = () => (
+	<AppProviders>
+		<Home />
+		<Fab />
+	</AppProviders>
+);
 export default App;

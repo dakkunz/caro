@@ -1,84 +1,105 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import Axios from "axios";
+import { message } from "antd";
+import jwtDecode from "jwt-decode";
+import firebase from "firebase/app";
 import "firebase/auth";
-import firebase from "@/resources/firebase";
+import firebaseConfig from "@/config/firebase.json";
+import API_URL from "@/config/API";
+
+firebase.initializeApp(firebaseConfig);
 
 const useProvideAuth = () => {
 	const [user, setUser] = useState(null);
 
-	// Wrap any Firebase methods we want to use making sure ...
-	// ... to save the user to state.
-	const signin = (email, password) => {
-		return firebase
-			.auth()
-			.signInWithEmailAndPassword(email, password)
-			.then((response) => {
-				setUser(response.user);
-				return response.user;
-			});
-	};
-
-	const signup = (email, password) => {
-		return firebase
-			.auth()
-			.createUserWithEmailAndPassword(email, password)
-			.then((response) => {
-				setUser(response.user);
-				return response.user;
-			});
-	};
-
-	const signout = () => {
-		return firebase
-			.auth()
-			.signOut()
-			.then(() => {
-				setUser(false);
-			});
-	};
-
-	const sendPasswordResetEmail = (email) => {
-		return firebase
-			.auth()
-			.sendPasswordResetEmail(email)
-			.then(() => {
-				return true;
-			});
-	};
-
-	const confirmPasswordReset = (code, password) => {
-		return firebase
-			.auth()
-			.confirmPasswordReset(code, password)
-			.then(() => {
-				return true;
-			});
-	};
-
-	// Subscribe to user on mount
-	// Because this sets state in the callback it will cause any ...
-	// ... component that utilizes this hook to re-render with the ...
-	// ... latest auth object.
-	useEffect(() => {
-		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-			if (user) {
+	const loginWithUsername = ({ username, password }) => {
+		Axios.post(API_URL + "/login", { username, password })
+			.then(({ data: { user, token } }) => {
+				localStorage.setItem("token", token);
 				setUser(user);
-			} else {
-				setUser(false);
-			}
-		});
+			})
+			.catch((err) => {
+				console.log(err.reponse);
+				message.error("Login Fail");
+			});
+	};
 
-		// Cleanup subscription on unmount
-		return () => unsubscribe();
+	const checkUserExist = ({ email, uid, photoURL }) => {
+		Axios.post(API_URL + "/check-user", { email, uid, photoURL })
+			.then(({ data: { user, token } }) => {
+				localStorage.setItem("token", token);
+				setUser(user);
+			})
+			.catch((err) => {
+				console.log(err.reponse);
+				message.error("Login Fail");
+			});
+	};
+
+	const loginWithGoogle = () => {
+		return firebase
+			.auth()
+			.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+			.then(({ user }) => {
+				setUser(user);
+				// checkUserExist({ email, uid, photoURL });
+			})
+			.catch(() => message.error("Login Fail"));
+	};
+
+	const loginWithFacebook = () => {
+		return firebase
+			.auth()
+			.signInWithPopup(new firebase.auth.FacebookAuthProvider())
+			.then(({ user: { email, uid, photoURL } }) => {
+				checkUserExist({ email, uid, photoURL });
+			})
+			.catch(() => message.error("Login Fail"));
+	};
+
+	const registerWithUsername = ({ username, password }) => {
+		Axios.post(API_URL + "/register", { username, password })
+			.then(({ data: { user, token } }) => {
+				localStorage.setItem("token", token);
+				setUser(user);
+			})
+			.catch((err) => {
+				console.log(err.reponse);
+				message.error("Register Fail");
+			});
+	};
+
+	const logout = () => {
+		setUser(false);
+		localStorage.removeItem("token");
+	};
+
+	const checkToken = (token) => {
+		if (token) {
+			try {
+				const user = jwtDecode(token);
+				setUser(user);
+			} catch {
+				setUser(false);
+				localStorage.removeItem("token");
+			}
+		} else setUser(false);
+	};
+
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		setTimeout(() => {
+			checkToken(token);
+		}, 1000);
 	}, []);
 
-	// Return the user object and auth methods
 	return {
 		user,
-		signin,
-		signup,
-		signout,
-		sendPasswordResetEmail,
-		confirmPasswordReset,
+		loginWithUsername,
+		registerWithUsername,
+		loginWithGoogle,
+		loginWithFacebook,
+		logout,
 	};
 };
 

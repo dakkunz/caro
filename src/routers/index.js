@@ -1,8 +1,10 @@
 import React from "react";
-import { Home, Login, Register, NotFound } from "@/routers/lazyRoutes";
+import { Home, NotFound } from "@/routers/lazyRoutes";
 import { Redirect } from "react-router-dom";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
 
-const appRoutes = [
+const publicRoutes = [
 	{
 		key: "login",
 		path: "/login",
@@ -18,6 +20,9 @@ const appRoutes = [
 		path: "/not-found",
 		component: NotFound,
 	},
+];
+
+const privateRoutes = [
 	{
 		key: "home",
 		path: "/",
@@ -30,4 +35,4 @@ const appRoutes = [
 	},
 ];
 
-export default appRoutes;
+export { publicRoutes, privateRoutes };

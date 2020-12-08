@@ -1,0 +1,26 @@
+.register-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	&-inner {
+		margin-bottom: 50px;
+		.ant-form-item {
+			width: 400px;
+		}
+		.btn-login {
+			margin: 5px 0 20px 0;
+			width: 100%;
+		}
+		.btn-social {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 10px;
+		}
+		.redirect {
+			margin: 20px 0;
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+		}
+	}
+}

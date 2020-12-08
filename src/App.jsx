@@ -1,25 +1,19 @@
 // libs
 import React, { Suspense } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 // providers
 import AppProviders from "@/providers";
 // components
-import FloatButton from "@/components/FloatButton";
-// others
-import appRoutes from "@/routers";
 import LoadingIndicator from "@/components/LoadingIndicator";
+import Main from "@/Main";
+// others
 
 const App = () => (
 	<AppProviders>
 		<BrowserRouter>
 			<Suspense fallback={<LoadingIndicator />}>
-				<Switch>
-					{appRoutes.map((route) => (
-						<Route {...route} />
-					))}
-				</Switch>
+				<Main />
 			</Suspense>
-			<FloatButton />
 		</BrowserRouter>
 	</AppProviders>
 );

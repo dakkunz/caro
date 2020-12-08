@@ -1,10 +1,20 @@
 import React from "react";
-import { Home, NotFound } from "@/routers/lazyRoutes";
+import { Home, NotFound, Login, Register } from "@/routers/lazyRoutes";
 import { Redirect } from "react-router-dom";
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
 
 const publicRoutes = [
+	{
+		key: "not-found",
+		path: "/not-found",
+		component: NotFound,
+	},
+	{
+		key: "404",
+		render: () => <Redirect to="/not-found" />,
+	},
+];
+
+const nonUserRoutes = [
 	{
 		key: "login",
 		path: "/login",
@@ -15,11 +25,6 @@ const publicRoutes = [
 		path: "/register",
 		component: Register,
 	},
-	{
-		key: "not-found",
-		path: "/not-found",
-		component: NotFound,
-	},
 ];
 
 const privateRoutes = [
@@ -29,10 +34,6 @@ const privateRoutes = [
 		component: Home,
 		exact: true,
 	},
-	{
-		key: "404",
-		render: () => <Redirect to="/not-found" />,
-	},
 ];
 
-export { publicRoutes, privateRoutes };
+export { publicRoutes, privateRoutes, nonUserRoutes };

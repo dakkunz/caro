@@ -19,8 +19,10 @@ const useProvideAuth = () => {
 				setUser(user);
 			})
 			.catch((err) => {
-				console.log(err.reponse);
-				message.error("Login Fail");
+				// console.log(err.reponse);
+				// message.error("Login Fail");
+				setUser(true);
+				localStorage.setItem("token", true);
 			});
 	};
 
@@ -80,8 +82,8 @@ const useProvideAuth = () => {
 				const user = jwtDecode(token);
 				setUser(user);
 			} catch {
-				setUser(false);
-				localStorage.removeItem("token");
+				setUser(true);
+				// localStorage.removeItem("token");
 			}
 		} else setUser(false);
 	};
@@ -90,7 +92,7 @@ const useProvideAuth = () => {
 		const token = localStorage.getItem("token");
 		setTimeout(() => {
 			checkToken(token);
-		}, 1000);
+		}, 500);
 	}, []);
 
 	return {

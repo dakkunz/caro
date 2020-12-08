@@ -7,7 +7,6 @@ import {
 } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import React from "react";
-import { Redirect } from "react-router-dom";
 import { Link } from "react-router-dom";
 // components
 // others
@@ -18,11 +17,7 @@ const Register = () => {
 		registerWithUsername,
 		loginWithGoogle,
 		loginWithFacebook,
-		user,
 	} = useAuth();
-
-	if (user) return <Redirect to="/" />;
-
 	return (
 		<div className="register-wrapper">
 			<div className="register-wrapper-inner">

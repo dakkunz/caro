@@ -6,7 +6,7 @@ import {
 	GoogleCircleFilled,
 } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 // components
 // others
@@ -14,7 +14,7 @@ import "./styles.scss";
 
 const Login = () => {
 	const { loginWithUsername, loginWithGoogle, loginWithFacebook } = useAuth();
-
+	const [loading, setLoading] = useState(false);
 	return (
 		<div className="login-wrapper">
 			<div className="login-wrapper-inner">
@@ -23,13 +23,14 @@ const Login = () => {
 					labelCol={{ span: 6 }}
 					wrapperCol={{ span: 18 }}
 					labelAlign="left"
-					onFinish={({ username, password }) =>
-						loginWithUsername({ username, password })
-					}
+					onFinish={({ userName, password }) => {
+						setLoading(true);
+						loginWithUsername({ userName, password }, () => setLoading(false));
+					}}
 				>
 					<Form.Item
 						label="Username"
-						name="username"
+						name="userName"
 						rules={[{ required: true, message: "Please input your username!" }]}
 						hasFeedback
 					>
@@ -43,7 +44,12 @@ const Login = () => {
 					>
 						<Input.Password />
 					</Form.Item>
-					<Button type="primary" htmlType="submit" className="btn-login">
+					<Button
+						loading={loading}
+						type="primary"
+						htmlType="submit"
+						className="btn-login"
+					>
 						Login
 					</Button>
 					<div className="btn-social">
@@ -51,14 +57,22 @@ const Login = () => {
 							type="primary"
 							ghost
 							icon={<FacebookFilled />}
-							onClick={loginWithFacebook}
+							onClick={() => {
+								setLoading(true);
+								loginWithFacebook(() => setLoading(false));
+							}}
+							loading={loading}
 						>
 							Login With Facebook
 						</Button>
 						<Button
 							danger
 							icon={<GoogleCircleFilled />}
-							onClick={loginWithGoogle}
+							onClick={() => {
+								setLoading(true);
+								loginWithGoogle(() => setLoading(false));
+							}}
+							loading={loading}
 						>
 							Login With Google
 						</Button>

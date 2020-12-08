@@ -6,7 +6,7 @@ import {
 	GoogleCircleFilled,
 } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 // components
 // others
@@ -18,6 +18,9 @@ const Register = () => {
 		loginWithGoogle,
 		loginWithFacebook,
 	} = useAuth();
+
+	const [loading, setLoading] = useState(false);
+
 	return (
 		<div className="register-wrapper">
 			<div className="register-wrapper-inner">
@@ -27,14 +30,34 @@ const Register = () => {
 					wrapperCol={{ span: 18 }}
 					labelAlign="left"
 					scrollToFirstError
-					onFinish={({ username, password }) =>
-						registerWithUsername({ username, password })
-					}
+					onFinish={({ confirmPassword, ...user }) => {
+						setLoading(true);
+						registerWithUsername(user, () => setLoading(false));
+					}}
 				>
 					<Form.Item
+						label="Name"
+						name="name"
+						rules={[{ required: true, message: "Please input your name!" }]}
+						hasFeedback
+					>
+						<Input />
+					</Form.Item>
+					<Form.Item
 						label="Username"
-						name="username"
+						name="userName"
 						rules={[{ required: true, message: "Please input your username!" }]}
+						hasFeedback
+					>
+						<Input />
+					</Form.Item>
+					<Form.Item
+						label="Email"
+						name="email"
+						rules={[
+							{ required: true, message: "Please input your email!" },
+							{ type: "email", message: "Please input a valid email!" },
+						]}
 						hasFeedback
 					>
 						<Input />
@@ -42,7 +65,10 @@ const Register = () => {
 					<Form.Item
 						label="Password"
 						name="password"
-						rules={[{ required: true, message: "Please input your password!" }]}
+						rules={[
+							{ required: true, message: "Please input your password!" },
+							{ min: 3 },
+						]}
 						hasFeedback
 					>
 						<Input.Password />
@@ -69,7 +95,12 @@ const Register = () => {
 					>
 						<Input.Password />
 					</Form.Item>
-					<Button type="primary" htmlType="submit" className="btn-login">
+					<Button
+						type="primary"
+						htmlType="submit"
+						loading={loading}
+						className="btn-login"
+					>
 						Sign Up
 					</Button>
 					<div className="btn-social">
@@ -77,14 +108,22 @@ const Register = () => {
 							type="primary"
 							ghost
 							icon={<FacebookFilled />}
-							onClick={loginWithFacebook}
+							onClick={() => {
+								setLoading(true);
+								loginWithFacebook(() => setLoading(false));
+							}}
+							loading={loading}
 						>
 							Sign Up With Facebook
 						</Button>
 						<Button
 							danger
 							icon={<GoogleCircleFilled />}
-							onClick={loginWithGoogle}
+							onClick={() => {
+								setLoading(true);
+								loginWithGoogle(() => setLoading(false));
+							}}
+							loading={loading}
 						>
 							Sign Up With Google
 						</Button>

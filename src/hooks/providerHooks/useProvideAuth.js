@@ -5,75 +5,82 @@ import jwtDecode from "jwt-decode";
 import firebase from "firebase/app";
 import "firebase/auth";
 import firebaseConfig from "@/config/firebase.json";
-import API_URL from "@/config/API";
+import { API_URL } from "@/config/URL";
 
 firebase.initializeApp(firebaseConfig);
 
 const useProvideAuth = () => {
 	const [user, setUser] = useState(null);
 
-	const loginWithUsername = ({ username, password }) => {
-		Axios.post(API_URL + "/login", { username, password })
-			.then(({ data: { user, token } }) => {
+	const loginWithUsername = ({ userName, password }, cb) => {
+		Axios.post(API_URL + "/users/login", { userName, password })
+			.then(({ data: { token, ...user } }) => {
 				localStorage.setItem("token", token);
 				setUser(user);
 			})
-			.catch((err) => {
-				// console.log(err.reponse);
-				// message.error("Login Fail");
-				setUser(true);
-				localStorage.setItem("token", true);
-			});
+			.catch(({ response }) => {
+				response && response.data.message
+					? message.error(response.data.message)
+					: message.error("Login Fail");
+			})
+			.finally(() => cb());
 	};
 
-	const checkUserExist = ({ email, uid, photoURL }) => {
-		Axios.post(API_URL + "/check-user", { email, uid, photoURL })
-			.then(({ data: { user, token } }) => {
+	const checkUserExist = (token, cb) => {
+		Axios.post(API_URL + "/users/login-social", token)
+			.then(({ data: { token, ...user } }) => {
 				localStorage.setItem("token", token);
 				setUser(user);
 			})
-			.catch((err) => {
-				console.log(err.reponse);
-				message.error("Login Fail");
-			});
+			.catch(({ response }) => {
+				response && response.data.message
+					? message.error(response.data.message)
+					: message.error("Login Fail");
+			})
+			.finally(() => cb());
 	};
 
-	const loginWithGoogle = () => {
-		return firebase
+	const loginWithGoogle = (cb) =>
+		firebase
 			.auth()
 			.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-			.then(({ user }) => {
-				setUser(user);
-				// checkUserExist({ email, uid, photoURL });
-			})
+			.then(({ user }) =>
+				user.getIdTokenResult().then((token) => checkUserExist(token, cb))
+			)
 			.catch(() => message.error("Login Fail"));
-	};
 
-	const loginWithFacebook = () => {
-		return firebase
+	const loginWithFacebook = (cb) =>
+		firebase
 			.auth()
 			.signInWithPopup(new firebase.auth.FacebookAuthProvider())
-			.then(({ user: { email, uid, photoURL } }) => {
-				checkUserExist({ email, uid, photoURL });
-			})
+			.then(({ user }) =>
+				user.getIdTokenResult().then((token) => checkUserExist(token, cb))
+			)
 			.catch(() => message.error("Login Fail"));
-	};
 
-	const registerWithUsername = ({ username, password }) => {
-		Axios.post(API_URL + "/register", { username, password })
-			.then(({ data: { user, token } }) => {
+	const registerWithUsername = (user, cb) => {
+		Axios.post(API_URL + "/users/signup", user)
+			.then(({ data: { token, ...user } }) => {
 				localStorage.setItem("token", token);
 				setUser(user);
 			})
-			.catch((err) => {
-				console.log(err.reponse);
-				message.error("Register Fail");
-			});
+			.catch(({ response }) => {
+				response && response.data.message
+					? message.error(response.data.message)
+					: message.error("Register Fail");
+			})
+			.finally(() => cb());
 	};
 
-	const logout = () => {
+	const logout = (userId) => {
+		Axios.post(API_URL + "/users/logout", { userId }).catch(({ response }) => {
+			response && response.data.message
+				? message.error(response.data.message)
+				: message.error("Logout Fail");
+		});
 		setUser(false);
 		localStorage.removeItem("token");
+		firebase.auth().signOut();
 	};
 
 	const checkToken = (token) => {
@@ -82,8 +89,8 @@ const useProvideAuth = () => {
 				const user = jwtDecode(token);
 				setUser(user);
 			} catch {
-				setUser(true);
-				// localStorage.removeItem("token");
+				setUser(false);
+				localStorage.removeItem("token");
 			}
 		} else setUser(false);
 	};

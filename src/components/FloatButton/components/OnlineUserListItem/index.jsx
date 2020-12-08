@@ -11,7 +11,7 @@ const OnlineUserListItem = ({ item }) => (
 			<List.Item.Meta
 				avatar={
 					<Badge status="success" offset={[0, 35]}>
-						<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+						<Avatar src={item.image} />
 					</Badge>
 				}
 				title={item.name}

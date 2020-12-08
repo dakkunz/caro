@@ -28,7 +28,7 @@ const Main = () => {
 					<Route {...route} />
 				))}
 			</Switch>
-			{user.email && <FloatButton />}
+			{user && <FloatButton />}
 		</>
 	);
 };

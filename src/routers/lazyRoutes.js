@@ -1,6 +1,6 @@
 import { lazy } from "react";
 
-const delayImport = (ms = 500) => (promise) =>
+const delayImport = (ms = 300) => (promise) =>
 	promise.then(
 		(data) =>
 			new Promise((resolve) => {

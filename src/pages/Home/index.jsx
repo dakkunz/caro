@@ -1,11 +1,31 @@
 // libs
+import OnlineUserList from "@/components/FloatButton/mains/OnlineUserList";
+import useAuth from "@/hooks/useAuth";
+import { Avatar, Button } from "antd";
 import React from "react";
-import { useHistory } from "react-router-dom";
 // components
 // others
 import "./styles.scss";
 
 const Home = () => {
-	return <div className="home-wrapper">Home</div>;
+	const {
+		logout,
+		user: { name, email, image },
+	} = useAuth();
+	return (
+		<div className="home-wrapper">
+			<div>
+				Welcome, {name} - {email}
+			</div>
+			<Avatar src={image} shape="circle" />
+			<div>
+				<Button onClick={logout}>Logout</Button>
+			</div>
+
+			<div>
+				<OnlineUserList />
+			</div>
+		</div>
+	);
 };
 export default Home;

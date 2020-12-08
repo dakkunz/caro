@@ -1,21 +1,31 @@
 // libs
 import OnlineUserListItem from "../../components/OnlineUserListItem";
 import { List } from "antd";
-import React from "react";
-// components
+import React, { useEffect } from "react";
+// hooks
+import useOnlineListener from "@/hooks/useOnlineListener";
 // others
 import "./styles.scss";
+import useAuth from "@/hooks/useAuth";
 
-const OnlineUserList = () => (
-	<List
-		className="online-user-list-wrapper"
-		loading={false}
-		itemLayout="horizontal"
-		dataSource={[
-			{ id: "1", name: "Toan", email: "kurokenshiz@gmail.com" },
-			{ id: "2", name: "Toan", email: "kurokenshiz@gmail.com" },
-		]}
-		renderItem={(item) => <OnlineUserListItem item={item} key={item.id} />}
-	/>
-);
+const OnlineUserList = () => {
+	const { list, emitOnline } = useOnlineListener();
+	const { user } = useAuth();
+	// useEffect(() => {
+	// 	console.log(user);
+	// 	emitOnline(user);
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [user]);
+	return (
+		<List
+			className="online-user-list-wrapper"
+			loading={false}
+			itemLayout="horizontal"
+			dataSource={list}
+			renderItem={(item) => (
+				<OnlineUserListItem item={item} key={item.userId} />
+			)}
+		/>
+	);
+};
 export default OnlineUserList;

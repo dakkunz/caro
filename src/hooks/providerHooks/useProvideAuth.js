@@ -72,12 +72,14 @@ const useProvideAuth = () => {
 			.finally(() => cb());
 	};
 
-	const logout = (userId) => {
-		Axios.post(API_URL + "/users/logout", { userId }).catch(({ response }) => {
-			response && response.data.message
-				? message.error(response.data.message)
-				: message.error("Logout Fail");
-		});
+	const logout = () => {
+		Axios.post(API_URL + "/users/logout", { userId: user.userId }).catch(
+			({ response }) => {
+				response && response.data.message
+					? message.error(response.data.message)
+					: message.error("Logout Fail");
+			}
+		);
 		setUser(false);
 		localStorage.removeItem("token");
 		firebase.auth().signOut();

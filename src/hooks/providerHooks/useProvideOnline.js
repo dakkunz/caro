@@ -18,6 +18,7 @@ const useProvideOnline = () => {
 
 	return {
 		list,
+		setList,
 		emitOffline,
 		emitOnline,
 	};

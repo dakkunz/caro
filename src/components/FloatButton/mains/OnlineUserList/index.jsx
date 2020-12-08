@@ -1,21 +1,30 @@
 // libs
 import OnlineUserListItem from "../../components/OnlineUserListItem";
-import { List } from "antd";
+import { List, message } from "antd";
 import React, { useEffect } from "react";
 // hooks
 import useOnlineListener from "@/hooks/useOnlineListener";
 // others
 import "./styles.scss";
-import useAuth from "@/hooks/useAuth";
+import Axios from "axios";
+import { API_URL } from "@/config/URL";
 
 const OnlineUserList = () => {
-	const { list, emitOnline } = useOnlineListener();
-	const { user } = useAuth();
-	// useEffect(() => {
-	// 	console.log(user);
-	// 	emitOnline(user);
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [user]);
+	const { list, setList } = useOnlineListener();
+	const getOnline = () =>
+		Axios.post(API_URL + "/users/online")
+			.then(({ data }) => {
+				setList(data);
+			})
+			.catch(({ response }) => {
+				response && response.data.message
+					? message.error(response.data.message)
+					: message.error("Register Fail");
+			});
+	useEffect(() => {
+		getOnline();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 	return (
 		<List
 			className="online-user-list-wrapper"

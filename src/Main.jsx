@@ -5,7 +5,6 @@ import { Route, Switch } from "react-router-dom";
 import AuthenticatingIndicator from "@/components/AuthenticatingIndicator";
 import NonUserRoute from "@/components/NonUserRoute";
 import PrivateRoute from "@/components/PrivateRoute";
-import FloatButton from "@/components/FloatButton";
 // hooks
 import useAuth from "@/hooks/useAuth";
 // routers
@@ -28,7 +27,7 @@ const Main = () => {
 					<Route {...route} />
 				))}
 			</Switch>
-			{user && <FloatButton />}
+			{/* {user && <FloatButton />} */}
 		</>
 	);
 };

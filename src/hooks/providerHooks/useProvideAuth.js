@@ -29,7 +29,7 @@ const useProvideAuth = () => {
 	};
 
 	const checkUserExist = (token, cb) => {
-		 Axios.post(API_URL + "/users/login-social", token)
+		Axios.post(API_URL + "/users/login-social", token)
 			.then(({ data: { token, ...user } }) => {
 				localStorage.setItem("token", token);
 				setUser(user);
@@ -43,14 +43,15 @@ const useProvideAuth = () => {
 			.finally(() => cb());
 	};
 
-	const loginWithGoogle = (cb) =>{
+	const loginWithGoogle = (cb) => {
 		firebase
 			.auth()
 			.signInWithPopup(new firebase.auth.GoogleAuthProvider())
 			.then(({ user }) =>
 				user.getIdTokenResult().then((token) => checkUserExist(token, cb))
 			)
-			.catch(() => message.error("Login Fail"));}
+			.catch(() => message.error("Login Fail"));
+	};
 
 	const loginWithFacebook = (cb) =>
 		firebase

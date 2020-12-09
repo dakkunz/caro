@@ -31,6 +31,7 @@ const OnlineUserList = () => {
 			loading={false}
 			itemLayout="horizontal"
 			dataSource={list}
+			size="small"
 			renderItem={(item) => (
 				<OnlineUserListItem item={item} key={item.userId} />
 			)}

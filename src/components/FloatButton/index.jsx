@@ -1,21 +1,35 @@
 // libs
-import { Button } from "antd";
-import React from "react";
+import { Button, Drawer } from "antd";
+import React, { useState } from "react";
 import { SmileOutlined } from "@ant-design/icons";
 // components
-import FloatButtonPopup from "@/components/FloatButton/mains/FloatButtonPopup";
+import OnlineUserList from "@/components/FloatButton/mains/OnlineUserList";
 // others
 import "./styles.scss";
 
-const FloatButton = () => (
-	<FloatButtonPopup>
-		<Button
-			className="float-button-wrapper"
-			type="primary"
-			shape="circle"
-			size="large"
-			icon={<SmileOutlined />}
-		/>
-	</FloatButtonPopup>
-);
+const FloatButton = () => {
+	const [show, setShow] = useState(false);
+	return (
+		<>
+			<Button
+				className="float-button-wrapper"
+				type="primary"
+				shape="circle"
+				size="large"
+				icon={<SmileOutlined />}
+				onClick={() => setShow(true)}
+			/>
+			<Drawer
+				width={400}
+				title="Online User"
+				placement="left"
+				closable={false}
+				onClose={() => setShow(false)}
+				visible={show}
+			>
+				<OnlineUserList />
+			</Drawer>
+		</>
+	);
+};
 export default FloatButton;

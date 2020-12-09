@@ -1,6 +1,7 @@
 // libs
 import OnlineUserList from "@/components/FloatButton/mains/OnlineUserList";
 import useAuth from "@/hooks/useAuth";
+import useOnlineListener from "@/hooks/useOnlineListener";
 import { Avatar, Button } from "antd";
 import React from "react";
 // components
@@ -10,8 +11,16 @@ import "./styles.scss";
 const Home = () => {
 	const {
 		logout,
-		user: { name, email, image },
+		user: { userId, name, email, image },
 	} = useAuth();
+
+	const  {emitOffline} = useOnlineListener();
+
+	const submitLogout = () => {
+		logout();
+		emitOffline(userId);
+	}
+
 	return (
 		<div className="home-wrapper">
 			<div>
@@ -19,7 +28,7 @@ const Home = () => {
 			</div>
 			<Avatar src={image} shape="circle" />
 			<div>
-				<Button onClick={logout}>Logout</Button>
+				<Button onClick={submitLogout}>Logout</Button>
 			</div>
 
 			<div>

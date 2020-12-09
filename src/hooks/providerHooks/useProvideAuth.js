@@ -6,6 +6,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import firebaseConfig from "@/config/firebase.json";
 import { API_URL } from "@/config/URL";
+import socket from "@/config/socket";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -17,6 +18,7 @@ const useProvideAuth = () => {
 			.then(({ data: { token, ...user } }) => {
 				localStorage.setItem("token", token);
 				setUser(user);
+				socket.emit("user-online", user);
 			})
 			.catch(({ response }) => {
 				response && response.data.message
@@ -27,10 +29,11 @@ const useProvideAuth = () => {
 	};
 
 	const checkUserExist = (token, cb) => {
-		Axios.post(API_URL + "/users/login-social", token)
+		 Axios.post(API_URL + "/users/login-social", token)
 			.then(({ data: { token, ...user } }) => {
 				localStorage.setItem("token", token);
 				setUser(user);
+				socket.emit("user-online", user);
 			})
 			.catch(({ response }) => {
 				response && response.data.message
@@ -40,14 +43,14 @@ const useProvideAuth = () => {
 			.finally(() => cb());
 	};
 
-	const loginWithGoogle = (cb) =>
+	const loginWithGoogle = (cb) =>{
 		firebase
 			.auth()
 			.signInWithPopup(new firebase.auth.GoogleAuthProvider())
 			.then(({ user }) =>
 				user.getIdTokenResult().then((token) => checkUserExist(token, cb))
 			)
-			.catch(() => message.error("Login Fail"));
+			.catch(() => message.error("Login Fail"));}
 
 	const loginWithFacebook = (cb) =>
 		firebase

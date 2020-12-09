@@ -14,7 +14,7 @@ const OnlineUserList = () => {
 	const getOnline = () =>
 		Axios.post(API_URL + "/users/online")
 			.then(({ data }) => {
-				setList(data);
+				setList(data.users);
 			})
 			.catch(({ response }) => {
 				response && response.data.message

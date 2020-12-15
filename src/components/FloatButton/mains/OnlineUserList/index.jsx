@@ -10,9 +10,9 @@ import Axios from "axios";
 import { API_URL } from "@/config/URL";
 
 const OnlineUserList = () => {
-	const { list, setList } = useOnlineListener();
-	const getOnline = () =>
-		Axios.post(API_URL + "/users/online")
+	const { list, setList, socket } = useOnlineListener();
+	const getOnline = (socketId) =>
+		Axios.post(API_URL + "/users/online", socketId)
 			.then(({ data }) => {
 				setList(data.users);
 			})
@@ -22,7 +22,7 @@ const OnlineUserList = () => {
 					: message.error("Register Fail");
 			});
 	useEffect(() => {
-		getOnline();
+		// getOnline(socket.id);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 	return (

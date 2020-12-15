@@ -1,32 +1,32 @@
-import { useEffect, useState } from "react";
-import socket from "@/config/socket";
+import { useEffect, useMemo, useState } from "react";
+import { io } from "socket.io-client";
+import useAuth from "@/hooks/useAuth";
+import { SOCKET_URL } from "@/config/URL";
 
 const useProvideOnline = () => {
 	const [list, setList] = useState([]);
-	const emitOffline = (userId) => {
-		socket.emit("user-offline", userId);
-	};
-	const emitOnline = (user) => {
-		socket.emit("user-online", user);
-	};
-
+	const { user } = useAuth();
+	const socket = useMemo(() => io(SOCKET_URL), []);
 	useEffect(() => {
-		socket.on("user-online", (user) => {
-			setList((list) => [...new Set([...list, user])]);
+		socket.on("connect", () => {
+			console.log("Client Online: ", socket.id);
+			if (user) socket.emit("user-online", { ...user, socketId: socket.id });
 		});
-		socket.on("user-offline", (userId) => {
-			setList((list) =>
-				list.filter((user) => (user.id || user.userId) !== userId)
-			);
+		socket.on("user-online", (newUser) =>
+			setList((list) => [...list, newUser])
+		);
+		socket.on("user-offline", (clientId) => {
+			console.log("Client offline", clientId);
+			setList((list) => list.filter((user) => user.socketId !== clientId));
 		});
+		socket.on("get-online", (list) => setList(list));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [list]);
+	}, []);
 
 	return {
 		list,
 		setList,
-		emitOffline,
-		emitOnline,
+		socket,
 	};
 };
 

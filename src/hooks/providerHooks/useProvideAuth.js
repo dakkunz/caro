@@ -6,7 +6,6 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import firebaseConfig from "@/config/firebase.json";
 import { API_URL } from "@/config/URL";
-import socket from "@/config/socket";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -18,7 +17,6 @@ const useProvideAuth = () => {
 			.then(({ data: { token, ...user } }) => {
 				localStorage.setItem("token", token);
 				setUser(user);
-				socket.emit("user-online", user);
 			})
 			.catch(({ response }) => {
 				response && response.data.message
@@ -33,7 +31,6 @@ const useProvideAuth = () => {
 			.then(({ data: { token, ...user } }) => {
 				localStorage.setItem("token", token);
 				setUser(user);
-				socket.emit("user-online", user);
 			})
 			.catch(({ response }) => {
 				response && response.data.message

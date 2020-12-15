@@ -9,6 +9,7 @@ import PrivateRoute from "@/components/PrivateRoute";
 import useAuth from "@/hooks/useAuth";
 // routers
 import { privateRoutes, publicRoutes, nonUserRoutes } from "@/routers";
+import OnlineProvider from "@/providers/OnlineProvider";
 
 const Main = () => {
 	const { user } = useAuth();
@@ -20,9 +21,11 @@ const Main = () => {
 				{nonUserRoutes.map((route) => (
 					<NonUserRoute {...route} />
 				))}
-				{privateRoutes.map((route) => (
-					<PrivateRoute {...route} />
-				))}
+				<OnlineProvider>
+					{privateRoutes.map((route) => (
+						<PrivateRoute {...route} />
+					))}
+				</OnlineProvider>
 				{publicRoutes.map((route) => (
 					<Route {...route} />
 				))}

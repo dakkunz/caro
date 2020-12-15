@@ -11,15 +11,13 @@ import "./styles.scss";
 const Home = () => {
 	const {
 		logout,
-		user: { userId, name, email, image },
+		user: { name, email, image },
 	} = useAuth();
-
-	const  {emitOffline} = useOnlineListener();
-
+	const { socket } = useOnlineListener();
 	const submitLogout = () => {
 		logout();
-		emitOffline(userId);
-	}
+		socket.disconnect();
+	};
 
 	return (
 		<div className="home-wrapper">

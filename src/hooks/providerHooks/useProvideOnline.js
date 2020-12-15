@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
-import { io } from "socket.io-client";
+import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
-import { SOCKET_URL } from "@/config/URL";
+import useSocket from "@/hooks/useSocket";
 
 const useProvideOnline = () => {
 	const [list, setList] = useState([]);
 	const { user } = useAuth();
-	const socket = useMemo(() => io(SOCKET_URL), []);
+	const socket = useSocket();
 	useEffect(() => {
 		socket.on("connect", () => {
 			console.log("Client Online: ", socket.id);

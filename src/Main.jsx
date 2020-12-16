@@ -5,33 +5,34 @@ import { Route, Switch } from "react-router-dom";
 import AuthenticatingIndicator from "@/components/AuthenticatingIndicator";
 import NonUserRoute from "@/components/NonUserRoute";
 import PrivateRoute from "@/components/PrivateRoute";
+import FloatButton from "@/components/FloatButton";
+import Navbar from "@/components/Navbar";
 // hooks
 import useAuth from "@/hooks/useAuth";
+import OnlineProvider from "@/providers/OnlineProvider";
 // routers
 import { privateRoutes, publicRoutes, nonUserRoutes } from "@/routers";
-import OnlineProvider from "@/providers/OnlineProvider";
 
 const Main = () => {
 	const { user } = useAuth();
 	return user === null ? (
 		<AuthenticatingIndicator />
 	) : (
-		<>
-			<Switch>
-				{nonUserRoutes.map((route) => (
-					<NonUserRoute {...route} />
+		<Switch>
+			{nonUserRoutes.map((route) => (
+				<NonUserRoute {...route} />
+			))}
+			<OnlineProvider>
+				{user && <Navbar />}
+				{privateRoutes.map((route) => (
+					<PrivateRoute {...route} />
 				))}
-				<OnlineProvider>
-					{privateRoutes.map((route) => (
-						<PrivateRoute {...route} />
-					))}
-				</OnlineProvider>
-				{publicRoutes.map((route) => (
-					<Route {...route} />
-				))}
-			</Switch>
-			{/* {user && <FloatButton />} */}
-		</>
+				{user && <FloatButton />}
+			</OnlineProvider>
+			{publicRoutes.map((route) => (
+				<Route {...route} />
+			))}
+		</Switch>
 	);
 };
 

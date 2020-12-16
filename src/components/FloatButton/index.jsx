@@ -3,12 +3,14 @@ import { Button, Drawer } from "antd";
 import React, { useState } from "react";
 import { SmileOutlined } from "@ant-design/icons";
 // components
-import OnlineUserList from "@/components/FloatButton/mains/OnlineUserList";
+import OnlineUserList from "@/components/FloatButton/OnlineUserList";
 // others
 import "./styles.scss";
+import useOnlineListener from "@/hooks/useOnlineListener";
 
 const FloatButton = () => {
 	const [show, setShow] = useState(false);
+	const { list } = useOnlineListener();
 	return (
 		<>
 			<Button
@@ -21,9 +23,9 @@ const FloatButton = () => {
 			/>
 			<Drawer
 				width={400}
-				title="Online User"
+				title={`Online User (${list.length})`}
 				placement="left"
-				closable={false}
+				closable
 				onClose={() => setShow(false)}
 				visible={show}
 			>

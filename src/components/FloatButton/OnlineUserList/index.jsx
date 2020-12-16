@@ -1,5 +1,5 @@
 // libs
-import OnlineUserListItem from "../../components/OnlineUserListItem";
+import OnlineUserListItem from "../OnlineUserListItem";
 import { List } from "antd";
 import React from "react";
 // hooks

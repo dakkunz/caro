@@ -14,7 +14,7 @@ const OnlineUserListItem = ({ item }) => (
 						<Avatar src={item.image} />
 					</Badge>
 				}
-				title={`${item.name} (${item.userName})`}
+				title={item.name}
 				description={item.email}
 			/>
 		</Skeleton>

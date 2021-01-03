@@ -1,7 +1,7 @@
-import ActionType from '../constants/actionTypes';
+import { ROOM_ACTIONS } from "@/constants/actionTypes";
 
 export default function actionRefresh() {
-    return {
-        type: ActionType.REFRESH
-    };
+	return {
+		type: ROOM_ACTIONS.REFRESH,
+	};
 }

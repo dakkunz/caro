@@ -1,6 +1,5 @@
 import { createContext } from "react";
 
-const authContext = createContext();
-const onlineContext = createContext();
+const socketContext = createContext();
 
-export { authContext, onlineContext };
+export { socketContext };

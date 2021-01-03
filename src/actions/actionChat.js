@@ -1,8 +1,8 @@
-import ActionType from '../constants/actionTypes';
+import { ROOM_ACTIONS } from "@/constants/actionTypes";
 
 export default function actionChat(message) {
-    return {
-        type: ActionType.CHAT,
-        message
-    };
+	return {
+		type: ROOM_ACTIONS.CHAT,
+		message,
+	};
 }

@@ -1,10 +1,6 @@
-import { useMemo } from "react";
-import { io } from "socket.io-client";
-import { SOCKET_URL } from "@/config/URL";
+import { useContext} from "react";
+import { socketContext } from "@/contexts";
 
-const useSocket = (url = SOCKET_URL) => {
-	const socket = useMemo(() => io(url), [url]);
-	return socket;
-};
+const useSocket = () => useContext(socketContext);
 
 export default useSocket;

@@ -7,7 +7,7 @@ import { updateOnlineUser } from "@/actions/onlineUsers";
 import { SOCKET_TYPES } from "@/constants/socketTypes";
 import { message } from "antd";
 import { updateRoomList } from "@/actions/roomList";
-import { joinRoomSuccess } from "@/actions/room";
+import { joinRoomSuccess, receiveChat } from "@/actions/room";
 import { useHistory } from "react-router-dom";
 
 const useProvideSocket = () => {
@@ -48,7 +48,7 @@ const useProvideSocket = () => {
 							socketInstance.current.disconnect();
 						}, 2000);
 					})
-					// room
+					// room list
 					.on(SOCKET_TYPES.JOIN_ROOM_SUCCESS, (roomInfo) => {
 						dispatch(joinRoomSuccess(roomInfo));
 						push("/room", { roomInfo });
@@ -60,6 +60,16 @@ const useProvideSocket = () => {
 						dispatch(
 							updateRoomList(roomList.filter(({ id }) => id !== roomId))
 						);
+					})
+					// room
+					.on(
+						SOCKET_TYPES.ROOM__RECEIVE_CHAT,
+						({ fromUser, message, time }) => {
+							dispatch(receiveChat({ fromUser, message, time }));
+						}
+					)
+					.on(SOCKET_TYPES.ROOM__JOIN_GAME_SUCCESS, (gameInfo) => {
+						push("/room", { gameInfo });
 					});
 			});
 		}

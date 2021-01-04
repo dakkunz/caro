@@ -16,4 +16,5 @@ export const SOCKET_TYPES = {
 	STOP_FIND_MATCH: "stop-find-match",
 	ROOM__SEND_CHAT: "room--send-chat",
 	ROOM__RECEIVE_CHAT: "room--receive-chat",
+	ROOM__JOIN_GAME_SUCCESS: "room--join-game-sucesss",
 };

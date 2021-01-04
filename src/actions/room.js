@@ -9,3 +9,8 @@ export const leaveRoom = (roomId) => ({
 	type: ROOM_ACTIONS.LEAVE_ROOM,
 	payload: { roomId },
 });
+
+export const receiveChat = ({ fromUser, message, time }) => ({
+	type: ROOM_ACTIONS.RECEIVE_CHAT,
+	payload: { fromUser, message, time },
+});

@@ -11,4 +11,7 @@ export const SOCKET_TYPES = {
 	JOIN_ROOM_SUCCESS: "join-room-success",
 	HAS_NEW_ROOM: "has-new-room",
 	REMOVE_OLD_ROOM: "remove-old-room",
+	CREATE_ROOM_REQUEST: "create-room-request",
+	FIND_MATCH: "find-match",
+	STOP_FIND_MATCH: "stop-find-match",
 };

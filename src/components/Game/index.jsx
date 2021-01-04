@@ -7,6 +7,7 @@ import Status from "./components/Status";
 import Config from "@/constants/configs";
 import useAuth from "@/hooks/useAuth";
 import useSocket from "@/hooks/useSocket";
+import CountDown from "ant-design-pro/lib/CountDown";
 //actions
 import actionClick from "@/actions/actionClick";
 import actionJoinRoom from "@/actions/actionJoinRoom";
@@ -17,393 +18,436 @@ import "./styles.scss";
 import { useHistory } from "react-router-dom";
 
 const Game = (props) => {
-	const { user } = useAuth();
+  const { user } = useAuth();
 
-	const { actions } = props;
-	const { history } = props;
-	const { stepNumber } = props;
-	const { nextMove } = props;
-	const { winCells } = props;
-	const { roomInfo } = props;
-	const { message } = props;
+  const { actions } = props;
+  const { history } = props;
+  const { stepNumber } = props;
+  const { nextMove } = props;
+  const { winCells } = props;
+  const { roomInfo } = props;
+  const { message } = props;
 
-	const socket = useSocket();
+  const socket = useSocket();
 
-	const setupSocket = () => {
-		socket.removeAllListeners();
+  const setupSocket = () => {
+    socket.removeAllListeners();
 
-		socket.on("move", function (data) {
-			handleClick(data.row, data.col);
-		});
+    socket.on("move", function (data) {
+      handleClick(data.row, data.col);
+      setCountDownTimer(new Date().getTime() + 20000);
+    });
 
-		socket.on("disconnectRoom", function (data) {
-			if (data.id) {
-				actions.actionJoinRoom(data);
-			}
-		});
+    socket.on("disconnectRoom", function (data) {
+      console.log("disconnect");
+      console.log(data);
+      if (data.id) {
+        actions.actionJoinRoom(data);
+      }
+    });
 
-		socket.on("chat", function (data) {
-			actions.actionChat(data);
-		});
+    socket.on("chat", function (data) {
+      actions.actionChat(data);
+    });
 
-		if (!socket.joinroom) {
-			socket.joinroom = true;
-			socket.emit("on-reconnect", { roomInfo, user });
-		}
-		socket.on("on-reconnect", function (data) {
-			if (data) {
-				data.justReconnect = true;
-				actions.actionJoinRoom(data);
-			} else {
-				actions.actionRefresh();
-			}
-		});
-	};
+    // if (!socket.joinroom) {
+    //   socket.joinroom = true;
+    //   socket.emit("on-reconnect", { roomInfo, user });
+    // }
+    // socket.on("on-reconnect", function (data) {
+    //   if (data) {
+    //     data.justReconnect = true;
+    //     actions.actionJoinRoom(data);
+    //   } else {
+    //     actions.actionRefresh();
+    //   }
+    // });
+  };
 
-	setupSocket();
+  setupSocket();
 
-	const { chatHistory } = props;
-	const [chatMessage, setChatMessage] = useState("");
-	const listChat = [];
-	for (let i = 0; i < chatHistory.length; i++) {
-		const color = chatHistory[i].sender === user.name ? "blue" : "red";
-		const style = { color: color };
-		listChat.push(
-			<b style={style} key={i}>
-				{chatHistory[i].sender}
-			</b>
-		);
-		listChat.push(": " + chatHistory[i].message);
-		listChat.push(<br key={i + chatHistory.length}></br>);
-	}
+  const { chatHistory } = props;
+  const [chatMessage, setChatMessage] = useState("");
+  const [countDownTimer, setCountDownTimer] = useState(
+    new Date().getTime() + 20000
+  );
+  const [isOverTime, setIsOverTime] = useState(false);
+  const [isDisplayCountDown, setIsDisplayCountDown] = useState(true);
 
-	const isOnePlayerDisconnected =
-		roomInfo.playerO === "DISCONNECTED" || roomInfo.playerX === "DISCONNECTED";
-	const needToDisable = winCells || isOnePlayerDisconnected;
+  const listChat = [];
+  for (let i = 0; i < chatHistory.length; i++) {
+    const color = chatHistory[i].sender === user.name ? "blue" : "red";
+    const style = { color: color };
+    listChat.push(
+      <b style={style} key={i}>
+        {chatHistory[i].sender}
+      </b>
+    );
+    listChat.push(": " + chatHistory[i].message);
+    listChat.push(<br key={i + chatHistory.length}></br>);
+  }
 
-	const current = history[stepNumber];
+  const isOnePlayerDisconnected =
+    roomInfo.playerO === "DISCONNECTED" || roomInfo.playerX === "DISCONNECTED";
 
-	var isPlayerX = user.name === roomInfo.playerX;
-	if (user.name !== roomInfo.playerX) {
-		isPlayerX = user.name !== roomInfo.playerO;
-	}
-	const rivalName = isPlayerX ? roomInfo.playerO : roomInfo.playerX;
-	const rivalImage = isPlayerX ? roomInfo.imageO : roomInfo.imageX;
+  const isEndGame = winCells || isOnePlayerDisconnected || isOverTime;
 
-	const { push } = useHistory();
-	const exitGame = () => {
-		actions.actionRefresh();
-		push("/");
-		socket.disconnect();
-	};
+  const current = history[stepNumber];
 
-	const checkWin = (row, col, user, stepNumber) => {
-		if (stepNumber === 0) {
-			return null;
-		}
+  var isPlayerX = user.name === roomInfo.playerX;
+  if (user.name !== roomInfo.playerX) {
+    isPlayerX = user.name !== roomInfo.playerO;
+  }
+  const rivalName = isPlayerX ? roomInfo.playerO : roomInfo.playerX;
+  const rivalImage = isPlayerX ? roomInfo.imageO : roomInfo.imageX;
 
-		const { history } = props;
-		const current = history[stepNumber];
-		const squares = current.squares.slice();
+  const { push } = useHistory();
+  const exitGame = () => {
+    actions.actionRefresh();
+    push("/");
+    socket.disconnect();
+  };
 
-		let coorX = row;
-		let coorY = col;
+  const checkWin = (row, col, user, stepNumber) => {
+    if (stepNumber === 0) {
+      return null;
+    }
 
-		let countCol = 1;
-		let countRow = 1;
-		let countMainDiagonal = 1;
-		let countSkewDiagonal = 1;
-		let isBlock;
-		const rival = user === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
+    const { history } = props;
+    const current = history[stepNumber];
+    const squares = current.squares.slice();
 
-		isBlock = true;
-		let winCells = [];
-		coorX -= 1;
-		while (coorX >= 0 && squares[coorX][coorY] === user) {
-			countCol += 1;
-			winCells.push([coorX, coorY]);
-			coorX -= 1;
-		}
-		if (coorX >= 0 && squares[coorX][coorY] !== rival) {
-			isBlock = false;
-		}
-		coorX = row;
-		winCells.push([coorX, coorY]);
-		coorX += 1;
-		while (coorX <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
-			countCol += 1;
-			winCells.push([coorX, coorY]);
-			coorX += 1;
-		}
-		if (coorX <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
-			isBlock = false;
-		}
-		coorX = row;
-		if (isBlock === false && countCol >= 5) return winCells;
+    let coorX = row;
+    let coorY = col;
 
-		isBlock = true;
-		winCells = [];
-		coorY -= 1;
-		while (coorY >= 0 && squares[coorX][coorY] === user) {
-			countRow += 1;
-			winCells.push([coorX, coorY]);
-			coorY -= 1;
-		}
-		if (coorY >= 0 && squares[coorX][coorY] !== rival) {
-			isBlock = false;
-		}
-		coorY = col;
-		winCells.push([coorX, coorY]);
-		coorY += 1;
-		while (coorY <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
-			countRow += 1;
-			winCells.push([coorX, coorY]);
-			coorY += 1;
-		}
-		if (coorY <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
-			isBlock = false;
-		}
-		coorY = col;
-		if (isBlock === false && countRow >= 5) return winCells;
+    let countCol = 1;
+    let countRow = 1;
+    let countMainDiagonal = 1;
+    let countSkewDiagonal = 1;
+    let isBlock;
+    const rival = user === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
 
-		isBlock = true;
-		winCells = [];
-		coorX -= 1;
-		coorY -= 1;
-		while (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] === user) {
-			countMainDiagonal += 1;
-			winCells.push([coorX, coorY]);
-			coorX -= 1;
-			coorY -= 1;
-		}
-		if (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] !== rival) {
-			isBlock = false;
-		}
-		coorX = row;
-		coorY = col;
-		winCells.push([coorX, coorY]);
-		coorX += 1;
-		coorY += 1;
-		while (
-			coorX <= Config.brdSize - 1 &&
-			coorY <= Config.brdSize - 1 &&
-			squares[coorX][coorY] === user
-		) {
-			countMainDiagonal += 1;
-			winCells.push([coorX, coorY]);
-			coorX += 1;
-			coorY += 1;
-		}
-		if (
-			coorX <= Config.brdSize - 1 &&
-			coorY <= Config.brdSize - 1 &&
-			squares[coorX][coorY] !== rival
-		) {
-			isBlock = false;
-		}
-		coorX = row;
-		coorY = col;
-		if (isBlock === false && countMainDiagonal >= 5) return winCells;
+    isBlock = true;
+    let winCells = [];
+    coorX -= 1;
+    while (coorX >= 0 && squares[coorX][coorY] === user) {
+      countCol += 1;
+      winCells.push([coorX, coorY]);
+      coorX -= 1;
+    }
+    if (coorX >= 0 && squares[coorX][coorY] !== rival) {
+      isBlock = false;
+    }
+    coorX = row;
+    winCells.push([coorX, coorY]);
+    coorX += 1;
+    while (coorX <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
+      countCol += 1;
+      winCells.push([coorX, coorY]);
+      coorX += 1;
+    }
+    if (coorX <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
+      isBlock = false;
+    }
+    coorX = row;
+    if (isBlock === false && countCol >= 5) return winCells;
 
-		isBlock = true;
-		winCells = [];
-		coorX -= 1;
-		coorY += 1;
-		while (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] === user) {
-			countSkewDiagonal += 1;
-			winCells.push([coorX, coorY]);
-			coorX -= 1;
-			coorY += 1;
-		}
-		if (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] !== rival) {
-			isBlock = false;
-		}
-		coorX = row;
-		coorY = col;
-		winCells.push([coorX, coorY]);
-		coorX += 1;
-		coorY -= 1;
-		while (
-			coorX <= Config.brdSize - 1 &&
-			coorY <= Config.brdSize - 1 &&
-			squares[coorX][coorY] === user
-		) {
-			countSkewDiagonal += 1;
-			winCells.push([coorX, coorY]);
-			coorX += 1;
-			coorY -= 1;
-		}
-		if (
-			coorX <= Config.brdSize - 1 &&
-			coorY <= Config.brdSize - 1 &&
-			squares[coorX][coorY] !== rival
-		) {
-			isBlock = false;
-		}
-		if (isBlock === false && countSkewDiagonal >= 5) return winCells;
+    isBlock = true;
+    winCells = [];
+    coorY -= 1;
+    while (coorY >= 0 && squares[coorX][coorY] === user) {
+      countRow += 1;
+      winCells.push([coorX, coorY]);
+      coorY -= 1;
+    }
+    if (coorY >= 0 && squares[coorX][coorY] !== rival) {
+      isBlock = false;
+    }
+    coorY = col;
+    winCells.push([coorX, coorY]);
+    coorY += 1;
+    while (coorY <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
+      countRow += 1;
+      winCells.push([coorX, coorY]);
+      coorY += 1;
+    }
+    if (coorY <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
+      isBlock = false;
+    }
+    coorY = col;
+    if (isBlock === false && countRow >= 5) return winCells;
 
-		return null;
-	};
+    isBlock = true;
+    winCells = [];
+    coorX -= 1;
+    coorY -= 1;
+    while (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] === user) {
+      countMainDiagonal += 1;
+      winCells.push([coorX, coorY]);
+      coorX -= 1;
+      coorY -= 1;
+    }
+    if (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] !== rival) {
+      isBlock = false;
+    }
+    coorX = row;
+    coorY = col;
+    winCells.push([coorX, coorY]);
+    coorX += 1;
+    coorY += 1;
+    while (
+      coorX <= Config.brdSize - 1 &&
+      coorY <= Config.brdSize - 1 &&
+      squares[coorX][coorY] === user
+    ) {
+      countMainDiagonal += 1;
+      winCells.push([coorX, coorY]);
+      coorX += 1;
+      coorY += 1;
+    }
+    if (
+      coorX <= Config.brdSize - 1 &&
+      coorY <= Config.brdSize - 1 &&
+      squares[coorX][coorY] !== rival
+    ) {
+      isBlock = false;
+    }
+    coorX = row;
+    coorY = col;
+    if (isBlock === false && countMainDiagonal >= 5) return winCells;
 
-	const userClick = (row, col) => {
-		const { nextMove } = props;
+    isBlock = true;
+    winCells = [];
+    coorX -= 1;
+    coorY += 1;
+    while (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] === user) {
+      countSkewDiagonal += 1;
+      winCells.push([coorX, coorY]);
+      coorX -= 1;
+      coorY += 1;
+    }
+    if (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] !== rival) {
+      isBlock = false;
+    }
+    coorX = row;
+    coorY = col;
+    winCells.push([coorX, coorY]);
+    coorX += 1;
+    coorY -= 1;
+    while (
+      coorX <= Config.brdSize - 1 &&
+      coorY <= Config.brdSize - 1 &&
+      squares[coorX][coorY] === user
+    ) {
+      countSkewDiagonal += 1;
+      winCells.push([coorX, coorY]);
+      coorX += 1;
+      coorY -= 1;
+    }
+    if (
+      coorX <= Config.brdSize - 1 &&
+      coorY <= Config.brdSize - 1 &&
+      squares[coorX][coorY] !== rival
+    ) {
+      isBlock = false;
+    }
+    if (isBlock === false && countSkewDiagonal >= 5) return winCells;
 
-		if (needToDisable) {
-			return;
-		}
+    return null;
+  };
 
-		if (
-			(isPlayerX && nextMove === Config.oPlayer) ||
-			(!isPlayerX && nextMove === Config.xPlayer)
-		) {
-			return;
-		}
+  const userClick = (row, col) => {
+    const { nextMove } = props;
 
-		if (handleClick(row, col)) {
-			socket.emit("move", { row: row, col: col });
-		}
-	};
+    if (isEndGame) {
+      return;
+    }
 
-	const handleClick = (row, col) => {
-		const { actions } = props;
-		const { stepNumber } = props;
-		const { history } = props;
-		const { nextMove } = props;
-		const { winCells } = props;
+    if (
+      (isPlayerX && nextMove === Config.oPlayer) ||
+      (!isPlayerX && nextMove === Config.xPlayer)
+    ) {
+      return;
+    }
 
-		const curMove = nextMove;
-		const newHistory = history.slice(0, stepNumber + 1);
-		const current = newHistory[newHistory.length - 1];
+    if (handleClick(row, col)) {
+      socket.emit("move", { row: row, col: col });
+      setCountDownTimer(new Date().getTime() + 20000);
+    }
+  };
 
-		const squares = JSON.parse(JSON.stringify(current.squares));
+  const handleClick = (row, col) => {
+    const curMove = nextMove;
+    const newHistory = history.slice(0, stepNumber + 1);
+    const current = newHistory[newHistory.length - 1];
 
-		if (winCells == null && squares[row][col] == null) {
-			squares[row][col] = curMove;
-			const _nextMove =
-				curMove === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
-			const _winCells = checkWin(row, col, curMove, newHistory.length - 1);
-			const _history = newHistory.concat([
-				{
-					x: row,
-					y: col,
-					squares,
-				},
-			]);
+    const squares = JSON.parse(JSON.stringify(current.squares));
 
-			actions.actionClick(_history, _nextMove, _winCells);
-			return true;
-		}
-		return false;
-	};
+    if (winCells == null && squares[row][col] == null) {
+      squares[row][col] = curMove;
+      const _nextMove =
+        curMove === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
+      const _winCells = checkWin(row, col, curMove, newHistory.length - 1);
 
-	const handleChat = (e) => {
-		e.preventDefault();
-		socket.emit("chat", chatMessage);
-		setChatMessage("");
-	};
+      const _history = newHistory.concat([
+        {
+          x: row,
+          y: col,
+          squares,
+        },
+      ]);
 
-	return (
-		<div className="Game">
-			<Status
-				nextMove={nextMove}
-				winCells={winCells}
-				rivalName={rivalName}
-				messages={message}
-				isPlayerX={isPlayerX}
-			/>
-			<div className="board-game">
-				<div>
-					<Card className="card">
-						<Card.Body className="card-body">
-							<Card.Title className="card-title">
-								Bạn là {isPlayerX ? `X` : `O`}
-							</Card.Title>
-							<Card.Text className="card-text-bold">
-								<b>{user.name}</b>
-							</Card.Text>
-							<img src={user.image} className="avatar-small" alt="avatar" />
-							<br></br>
-						</Card.Body>
-						<Button
-							className="logout-button"
-							variant="danger"
-							onClick={() => exitGame()}
-						>
-							Thoát game
-						</Button>
-					</Card>
-					<br></br>
-					<Card className="card">
-						<Card.Body className="card-body">
-							<Card.Title className="card-title">
-								Đối thủ là {!isPlayerX ? `X` : `O`}
-							</Card.Title>
-							<Card.Text className="card-text-bold">
-								<b>{rivalName}</b>
-							</Card.Text>
-							<img
-								src={rivalImage}
-								className="avatar-small"
-								alt="rivalAvatar"
-							/>
-							<br></br>
-						</Card.Body>
-					</Card>
-				</div>
-				<div>
-					<Board
-						winCells={winCells}
-						squares={current.squares}
-						currentCell={[current.x, current.y]}
-						handleClick={(i, j) => userClick(i, j)}
-					/>
-				</div>
-				<div>
-					<Card className="card-chat">
-						<Card.Body className="card-body">
-							<Card.Title className="card-title">Chat</Card.Title>
-							<div className="scroll-view-chat">{listChat}</div>
-							<form onSubmit={(e) => handleChat(e)}>
-								<FormControl
-									type="chatMessage"
-									className="input-message"
-									placeholder="Nội dung"
-									value={chatMessage}
-									onChange={(e) => setChatMessage(e.target.value)}
-								></FormControl>
-							</form>
-						</Card.Body>
-					</Card>
-				</div>
-			</div>
-		</div>
-	);
+      actions.actionClick(_history, _nextMove, _winCells);
+
+      if (_winCells) saveGame(_nextMove);
+
+      return true;
+    }
+
+    return false;
+  };
+
+  const handleChat = (e) => {
+    e.preventDefault();
+    socket.emit("chat", chatMessage);
+    setChatMessage("");
+  };
+
+  const handleOverTime = () => {
+    console.log("het gio");
+    setIsOverTime(true);
+    saveGame();
+  };
+
+  const findWinner = (nextMove) => {
+    return nextMove === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
+  };
+
+  const saveGame = (nextMove) => {
+    setIsDisplayCountDown(false);
+    console.log("save game " + findWinner(nextMove));
+  };
+
+  return (
+    <div className="Game">
+      <Status
+        nextMove={nextMove}
+        winCells={winCells}
+        rivalName={rivalName}
+        messages={message}
+        isOverTime={isOverTime}
+        isPlayerX={isPlayerX}
+        winner={findWinner(nextMove)}
+      />
+      <div className="board-game">
+        <div>
+          <Card className="card">
+            <Card.Body className="card-body">
+              <Card.Title className="card-title">
+                Bạn là {isPlayerX ? `X` : `O`}
+              </Card.Title>
+              <Card.Text className="card-text-bold">
+                <b>{user.name}</b>
+              </Card.Text>
+              <img src={user.image} className="avatar-small" alt="avatar" />
+              <br></br>
+            </Card.Body>
+            <Button
+              className="logout-button"
+              variant="danger"
+              onClick={() => exitGame()}
+            >
+              Thoát game
+            </Button>
+            {isEndGame && (
+              <Button
+                className="logout-button"
+                variant="danger"
+                // onClick={() => exitGame()}
+              >
+                Chơi lại
+              </Button>
+            )}
+          </Card>
+          <br></br>
+          <Card className="card">
+            <Card.Body className="card-body">
+              <Card.Title className="card-title">
+                Đối thủ là {!isPlayerX ? `X` : `O`}
+              </Card.Title>
+              <Card.Text className="card-text-bold">
+                <b>{rivalName}</b>
+              </Card.Text>
+              <img
+                src={rivalImage}
+                className="avatar-small"
+                alt="rivalAvatar"
+              />
+              <br></br>
+            </Card.Body>
+          </Card>
+        </div>
+        <div>
+          <Board
+            winCells={winCells}
+            squares={current.squares}
+            currentCell={[current.x, current.y]}
+            handleClick={(i, j) => userClick(i, j)}
+          />
+        </div>
+        <div>
+          {isDisplayCountDown && (
+            <CountDown
+              style={{ fontSize: 40 }}
+              target={countDownTimer}
+              onEnd={handleOverTime}
+            />
+          )}
+          <Card className="card-chat">
+            <Card.Body className="card-body">
+              <Card.Title className="card-title">Chat</Card.Title>
+              <div className="scroll-view-chat">{listChat}</div>
+              <form onSubmit={(e) => handleChat(e)}>
+                <FormControl
+                  type="chatMessage"
+                  className="input-message"
+                  placeholder="Nội dung"
+                  value={chatMessage}
+                  onChange={(e) => setChatMessage(e.target.value)}
+                ></FormControl>
+              </form>
+            </Card.Body>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 const mapStateToProps = (state) => {
-	return {
-		history: state.gameReducers.data.history,
-		nextMove: state.gameReducers.data.nextMove,
-		stepNumber: state.gameReducers.data.stepNumber,
-		winCells: state.gameReducers.data.winCells,
-		message: state.gameReducers.message,
-		roomInfo: state.roomReducers.roomInfo,
-		chatHistory: state.roomReducers.chatHistory,
-	};
+  return {
+    history: state.gameReducers.data.history,
+    nextMove: state.gameReducers.data.nextMove,
+    stepNumber: state.gameReducers.data.stepNumber,
+    winCells: state.gameReducers.data.winCells,
+    message: state.gameReducers.message,
+    roomInfo: state.roomReducers.roomInfo,
+    chatHistory: state.roomReducers.chatHistory,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
-	return {
-		actions: bindActionCreators(
-			{
-				actionClick,
-				actionJoinRoom,
-				actionChat,
-				actionRefresh,
-			},
-			dispatch
-		),
-	};
+  return {
+    actions: bindActionCreators(
+      {
+        actionClick,
+        actionJoinRoom,
+        actionChat,
+        actionRefresh,
+      },
+      dispatch
+    ),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

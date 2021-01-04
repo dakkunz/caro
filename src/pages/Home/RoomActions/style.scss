@@ -1,0 +1,23 @@
+.home-wrapper .room-actions-wrapper {
+	border: solid #40a9ff 1px;
+	border-radius: 10px;
+	padding: 20px;
+	display: flex;
+	justify-content: space-between;
+	align-items: stretch;
+	> * + * {
+		margin-left: 20px;
+	}
+	.ant-btn {
+		.anticon {
+			font-size: 30px;
+		}
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		font-size: 20px;
+		height: 100%;
+		width: 50%;
+	}
+}

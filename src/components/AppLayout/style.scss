@@ -1,0 +1,9 @@
+.app-layout-wrapper {
+	.content {
+		padding: 20px;
+		display: grid;
+		grid-template-columns: auto 300px;
+		column-gap: 20px;
+		height: calc(100vh - 64px);
+	}
+}

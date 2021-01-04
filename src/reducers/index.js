@@ -1,8 +1,12 @@
 import { combineReducers } from "redux";
-import gameReducers from "./gameReducers";
+import game from "./game";
 import roomReducers from "./roomReducers";
+import onlineUsers from "./onlineUsers";
+import roomList from "./roomList";
 
 export default combineReducers({
-	gameReducers,
+	game,
 	roomReducers,
+	onlineUsers,
+	roomList,
 });

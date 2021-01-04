@@ -1,38 +1,39 @@
 // libs
 import React from "react";
 import { Route, Switch } from "react-router-dom";
+import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 // components
 import AuthenticatingIndicator from "@/components/AuthenticatingIndicator";
-import NonUserRoute from "@/components/NonUserRoute";
-import PrivateRoute from "@/components/PrivateRoute";
-import FloatButton from "@/components/FloatButton";
-import Navbar from "@/components/Navbar";
 // hooks
-import useAuth from "@/hooks/useAuth";
-import OnlineProvider from "@/providers/OnlineProvider";
+import SocketProvider from "@/providers/SocketProvider";
 // routers
-import { privateRoutes, publicRoutes, nonUserRoutes } from "@/routers";
+import { privateRoutes } from "@/routers";
+import { doAxiosRequestIntercept } from "@/config";
+import AppLayout from "@/components/AppLayout";
 
 const Main = () => {
-	const { user } = useAuth();
-	return user === null ? (
+	const { isLoading, error, getAccessTokenSilently } = useAuth0();
+
+	doAxiosRequestIntercept(getAccessTokenSilently);
+
+	return isLoading ? (
 		<AuthenticatingIndicator />
+	) : error ? (
+		<div>Oops... {error.message}</div>
 	) : (
-		<Switch>
-			{nonUserRoutes.map((route) => (
-				<NonUserRoute {...route} />
-			))}
-			<OnlineProvider>
-				{user && <Navbar />}
-				{privateRoutes.map((route) => (
-					<PrivateRoute {...route} />
-				))}
-				{user && <FloatButton />}
-			</OnlineProvider>
-			{publicRoutes.map((route) => (
-				<Route {...route} />
-			))}
-		</Switch>
+		<AppLayout>
+			<Switch>
+				<SocketProvider>
+					{privateRoutes.map(({ component, ...route }) => (
+						<Route
+							{...route}
+							component={withAuthenticationRequired(component)}
+						/>
+					))}
+				</SocketProvider>
+			</Switch>
+			<Switch></Switch>
+		</AppLayout>
 	);
 };
 

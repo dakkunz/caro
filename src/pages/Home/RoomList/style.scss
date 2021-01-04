@@ -1,0 +1,24 @@
+.room-list-wrapper {
+	border: solid #40a9ff 1px;
+	border-radius: 10px;
+	padding: 20px;
+	.ant-table table {
+		border-radius: 10px;
+	}
+	.title {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 10px;
+		h2 {
+			margin: 0;
+		}
+		.search-input {
+			width: 300px;
+		}
+	}
+	input:-webkit-autofill {
+		box-shadow: 0 0 0 1000px white inset !important;
+		-webkit-box-shadow: 0 0 0 1000px white inset !important;
+	}
+}

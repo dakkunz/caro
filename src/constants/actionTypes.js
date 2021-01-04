@@ -1,14 +1,20 @@
-import { Component } from 'react';
+export const ONLINE_USERS_ACTIONS = {
+	UPDATE_ONLINE: "UPDATE_ONLINE",
+};
 
-class ActionType extends Component {
-    
-    static CLICK = 'CLICK';
+export const ROOM_LIST_ACTION = {
+	GET_ROOMS_SUCCESS: "GET_ROOMS_SUCCESS",
+	GET_ROOMS_LOADING: "GET_ROOMS_LOADING",
+	SELECT_ROOM: "SELECT_ROOM",
+	UPDATE_ROOM_LIST: "UPDATE_ROOM_LIST",
+};
 
-    static JOIN_ROOM = 'JOIN_ROOM';
+export const GAME_ACTIONS = {
+	CLICK: "CLICK",
+};
 
-    static CHAT = 'CHAT';
-
-    static REFRESH = 'REFRESH';
-}
-
-export default ActionType;
+export const ROOM_ACTIONS = {
+	JOIN_ROOM: "JOIN_ROOM",
+	CHAT: "CHAT",
+	REFRESH: "REFRESH",
+};

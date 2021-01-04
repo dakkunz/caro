@@ -1,6 +1,5 @@
 // libs
 import Navbar from "@/components/Navbar";
-import OnlineUserList from "@/components/OnlineUserList";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Layout } from "antd";
 import React from "react";
@@ -17,10 +16,7 @@ const AppLayout = ({ children }) => {
 					<Navbar />
 				</Header>
 			)}
-			<Content className="content">
-				{children}
-				<OnlineUserList />
-			</Content>
+			<Content className="content">{children}</Content>
 		</Layout>
 	);
 };

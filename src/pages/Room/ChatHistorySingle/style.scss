@@ -1,0 +1,8 @@
+.room-wrapper .chat-history-single-wrapper {
+	display: flex;
+	align-items: center;
+	margin: 5px 0;
+	> * + * {
+		margin-left: 5px;
+	}
+}

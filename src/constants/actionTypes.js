@@ -14,7 +14,12 @@ export const GAME_ACTIONS = {
 };
 
 export const ROOM_ACTIONS = {
+	// old
 	JOIN_ROOM: "JOIN_ROOM",
 	CHAT: "CHAT",
 	REFRESH: "REFRESH",
+
+	// new
+	JOIN_ROOM_SUCCESS: "JOIN_ROOM_SUCCESS",
+	LEAVE_ROOM: "LEAVE_ROOM",
 };

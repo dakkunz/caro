@@ -6,8 +6,9 @@ import io from "socket.io-client";
 import { updateOnlineUser } from "@/actions/onlineUsers";
 import { SOCKET_TYPES } from "@/constants/socketTypes";
 import { message } from "antd";
-import { useHistory } from "react-router-dom";
 import { updateRoomList } from "@/actions/roomList";
+import { joinRoomSuccess } from "@/actions/room";
+import { useHistory } from "react-router-dom";
 
 const useProvideSocket = () => {
 	const socketInstance = useRef();
@@ -48,9 +49,10 @@ const useProvideSocket = () => {
 						}, 2000);
 					})
 					// room
-					.on(SOCKET_TYPES.JOIN_ROOM_SUCCESS, (roomId) =>
-						push("/game/" + roomId)
-					)
+					.on(SOCKET_TYPES.JOIN_ROOM_SUCCESS, (roomInfo) => {
+						dispatch(joinRoomSuccess(roomInfo));
+						push("/room", { roomInfo });
+					})
 					.on(SOCKET_TYPES.HAS_NEW_ROOM, (room) => {
 						dispatch(updateRoomList([room, ...roomList]));
 					})

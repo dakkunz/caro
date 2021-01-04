@@ -1,0 +1,15 @@
+.room-wrapper .player-place-wrapper {
+	.card-body {
+		display: flex;
+		align-items: center;
+		.player-ava {
+			margin-right: 20px;
+			height: 100%;
+		}
+		.player-desc {
+			font-size: 30px;
+		}
+	}
+	border: solid #40a9ff 1px;
+	border-radius: 5px;
+}

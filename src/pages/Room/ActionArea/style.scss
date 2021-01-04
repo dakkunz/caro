@@ -1,14 +1,8 @@
-.home-wrapper .room-actions-wrapper {
-	border: solid #40a9ff 1px;
-	border-radius: 10px;
-	padding: 20px;
+.room-wrapper .action-area-wrapper {
 	display: flex;
 	justify-content: space-between;
-	align-items: stretch;
+	align-items: center;
 	margin-top: 20px;
-	> * + * {
-		margin-left: 20px;
-	}
 	.ant-btn {
 		.anticon {
 			font-size: 30px;

@@ -1,0 +1,12 @@
+.viewer-list-item-wrapper {
+	.ant-list-item-meta {
+		align-items: center;
+	}
+
+	padding: 5px 0 !important ;
+	.viewer-desc {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+}

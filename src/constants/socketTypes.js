@@ -14,4 +14,6 @@ export const SOCKET_TYPES = {
 	CREATE_ROOM_REQUEST: "create-room-request",
 	FIND_MATCH: "find-match",
 	STOP_FIND_MATCH: "stop-find-match",
+	ROOM__SEND_CHAT: "room--send-chat",
+	ROOM__RECEIVE_CHAT: "room--receive-chat",
 };

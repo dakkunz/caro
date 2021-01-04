@@ -1,0 +1,8 @@
+.room-wrapper .viewers-area-wrapper {
+	border: solid #40a9ff 1px;
+	border-radius: 5px;
+	.ant-card-body {
+		height: calc(100% - 42px);
+		overflow-y: auto;
+	}
+}

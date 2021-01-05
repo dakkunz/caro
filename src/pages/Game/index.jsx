@@ -30,7 +30,7 @@ const Game = (props) => {
 	const socket = useSocket();
 
 	const setupSocket = () => {
-		socket.removeAllListeners();
+		// socket.removeAllListeners();
 
 		socket.on("move", function (data) {
 			handleClick(data.row, data.col);

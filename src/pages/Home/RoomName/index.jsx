@@ -1,5 +1,6 @@
 import { LockOutlined } from "@ant-design/icons";
 import React from "react";
+
 import "./style.scss";
 
 const RoomName = ({ roomName, hasPassword }) => (

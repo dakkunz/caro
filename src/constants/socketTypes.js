@@ -17,4 +17,13 @@ export const SOCKET_TYPES = {
 	ROOM__SEND_CHAT: "room--send-chat",
 	ROOM__RECEIVE_CHAT: "room--receive-chat",
 	ROOM__JOIN_GAME_SUCCESS: "room--join-game-sucesss",
+
+	//room-thinh
+	
+
+	// game
+	JOIN_ROOM_QUICK_SUCCESS: "join-room-quick-success",
+	CHAT: "chat",
+	MOVE: "move",
+	DISCONNECT_ROOM: "disconnectRoom",
 };

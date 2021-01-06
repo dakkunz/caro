@@ -7,11 +7,7 @@ const roomStatusMapping = {
 		color: "green",
 	},
 	1: {
-		label: "Waiting Player",
-		color: "blue",
-	},
-	2: {
-		label: "Pending Start",
+		label: "Pending",
 		color: "magenta",
 	},
 };

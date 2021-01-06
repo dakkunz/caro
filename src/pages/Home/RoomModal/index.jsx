@@ -1,7 +1,7 @@
 import { SOCKET_TYPES } from "@/constants/socketTypes";
 import useSocket from "@/hooks/useSocket";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Form, Input, Modal } from "antd";
+import { Form, Input, InputNumber, Modal } from "antd";
 import React from "react";
 
 const RoomModal = ({ show, hide }) => {
@@ -24,10 +24,10 @@ const RoomModal = ({ show, hide }) => {
 			}}
 		>
 			<Form
-				initialValues={{ roomName: user.nickname + " Room" }}
+				initialValues={{ roomName: user.nickname + " Room", time: 30 }}
 				form={form}
-				onFinish={({ roomName, password }) => {
-					console.log({ roomName, password });
+				onFinish={({ roomName, password, time }) => {
+					console.log({ roomName, password, time: time * 1000 });
 					socket.emit(SOCKET_TYPES.CREATE_ROOM_REQUEST, roomName, password);
 				}}
 				layout="vertical"
@@ -41,6 +41,9 @@ const RoomModal = ({ show, hide }) => {
 				</Form.Item>
 				<Form.Item name="password" label="Password">
 					<Input.Password />
+				</Form.Item>
+				<Form.Item name="time" label="Timeout">
+					<InputNumber style={{ width: "100%" }} />
 				</Form.Item>
 			</Form>
 		</Modal>

@@ -201,7 +201,7 @@ const Game = (props) => {
 	const [chatMessage, setChatMessage] = useState("");
 	const listChat = [];
 	for (let i = 0; i < chatHistoryAll.length; i++) {
-		const color = chatHistoryAll[i].sender === user.name ? "blue" : "red";
+		const color = chatHistoryAll[i].sender === user.picuture ? "blue" : "red";
 		const style = { color: color };
 		listChat.push(
 			<b style={style} key={i}>
@@ -214,19 +214,20 @@ const Game = (props) => {
 
 	const current = history[stepNumber];
 
-	var isPlayerX = user.name === roomInfo.playerX;
-	if (user.name !== roomInfo.playerX) {
-		isPlayerX = user.name !== roomInfo.playerO;
-	}
-	const rivalName = isPlayerX ? roomInfo.playerO : roomInfo.playerX;
-	const rivalImage = isPlayerX ? roomInfo.pictureO : roomInfo.pictureX;
+	var isPlayerX = roomInfo.players.X && user.sub === roomInfo.players.X.sub;
+
+	const rivalName = isPlayerX
+		? (roomInfo.players.O || {}).nickname
+		: (roomInfo.players.X | {}).nickname || "DISCONNECTED";
+	const rivalImage = isPlayerX
+		? (roomInfo.players.O || {}).picture
+		: (roomInfo.players.X | {}).picture;
 
 	useEffect(() => {
 		let calculateWinner = null;
 
 		const isOnePlayerDisconnected =
-			roomInfo.playerO === "DISCONNECTED" ||
-			roomInfo.playerX === "DISCONNECTED";
+			roomInfo.players.O === null || roomInfo.players.X === null;
 
 		const isEndGame =
 			isOnePlayerDisconnected ||
@@ -269,7 +270,7 @@ const Game = (props) => {
 					nextMove === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
 			} else if (isOnePlayerDisconnected) {
 				calculateWinner =
-					roomInfo.playerX === "DISCONNECTED" ? Config.oPlayer : Config.xPlayer;
+					roomInfo.players.X === null ? Config.oPlayer : Config.xPlayer;
 			} else if (isSurrender && winner) {
 				calculateWinner = winner;
 			} else if (isDraw && winner) {
@@ -639,7 +640,7 @@ const mapStateToProps = (state) => {
 		stepNumber: state.game.data.stepNumber,
 		winCells: state.game.data.winCells,
 		message: state.game.message,
-		roomInfo: state.roomReducers.roomInfo,
+		roomInfo: state.room.roomInfo,
 		chatHistory: state.game.data.chatHistory,
 		isSaveGame: state.game.data.isSaveGame,
 		isFetching: state.game.isFetching,

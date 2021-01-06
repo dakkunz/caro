@@ -14,3 +14,8 @@ export const receiveChat = ({ fromUser, message, time }) => ({
 	type: ROOM_ACTIONS.RECEIVE_CHAT,
 	payload: { fromUser, message, time },
 });
+
+export const setIsJoinGame = (isJoinGame) => ({
+	type: ROOM_ACTIONS.SET_IS_JOIN_GAME,
+	payload: isJoinGame,
+});

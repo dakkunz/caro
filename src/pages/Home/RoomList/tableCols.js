@@ -28,8 +28,8 @@ export const columns = [
 		title: "Room Name",
 		dataIndex: "roomName",
 		key: "roomName",
-		render: (roomName, { hasPassword }) => (
-			<RoomName roomName={roomName} hasPassword={hasPassword} />
+		render: (roomName, { password }) => (
+			<RoomName roomName={roomName} hasPassword={password ? true : false} />
 		),
 	},
 	{
@@ -37,12 +37,19 @@ export const columns = [
 		dataIndex: "host",
 		key: "host",
 		width: "25%",
+		render: ({ nickname }) => <span>{nickname}</span>,
 	},
 	{
 		title: "Players",
 		dataIndex: "players",
 		key: "player",
 		width: "8%",
+		render: ({ X, O }) => {
+			let count = 0;
+			if (X) count += 1;
+			if (O) count += 1;
+			return <span>{count}/2</span>;
+		},
 	},
 	{
 		title: "Status",

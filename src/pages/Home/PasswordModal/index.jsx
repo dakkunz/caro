@@ -21,7 +21,11 @@ const PasswordModal = ({ show, hide }) => {
 				if (!password.length) {
 					message.error("Empty Password");
 				} else {
-					socket.emit(SOCKET_TYPES.JOIN_ROOM_REQUEST, selectedRoom, password);
+					socket.emit(
+						SOCKET_TYPES.JOIN_ROOM_REQUEST,
+						selectedRoom.id,
+						password
+					);
 					setPassword("");
 					hide();
 				}

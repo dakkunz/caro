@@ -1,18 +1,8 @@
 import { ROOM_LIST_ACTION } from "@/constants/actionTypes";
 
-const mockList = new Array(10).fill(0).map((item, id) => ({
-	id: id,
-	roomName: "Room name" + id,
-	host: "Host" + id,
-	status: id % 3,
-	players: ["Player1"],
-	viewers: ["View1", "Viewer2"],
-	hasPassword: !!(id % 2),
-}));
-
 /* eslint-disable import/no-anonymous-default-export */
 const initialState = {
-	list: mockList,
+	list: [],
 	isLoading: false,
 };
 

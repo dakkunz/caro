@@ -4,7 +4,7 @@ import useSocket from "@/hooks/useSocket";
 import PasswordModal from "@/pages/Home/PasswordModal";
 import { columns } from "@/pages/Home/RoomList/tableCols";
 import { Table, Input } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
 
@@ -24,6 +24,10 @@ const RoomList = () => {
 	const [show, setShow] = useState(false);
 	const dispatch = useDispatch();
 	const socket = useSocket();
+
+	useEffect(() => {
+		setFilteredList(list);
+	}, [list]);
 
 	return (
 		<div className="room-list-wrapper">
@@ -48,9 +52,9 @@ const RoomList = () => {
 				onRow={(room) => ({
 					onClick: () => {
 						dispatch(selectRoom(room));
-						if (room.hasPassword) {
+						if (room.password) {
 							setShow(true);
-						} else socket.emit(SOCKET_TYPES.JOIN_ROOM_REQUEST, room);
+						} else socket.emit(SOCKET_TYPES.JOIN_ROOM_REQUEST, room.id);
 					},
 				})}
 			/>

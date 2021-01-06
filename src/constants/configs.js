@@ -13,19 +13,16 @@ class Config extends Component {
         O: 'blue'
     };
 
+    static countDownTimer = 30000;
+
     static defaultAvatar = "https://simpleicon.com/wp-content/uploads/account.png";
 
-    static makeTwoDigits(src) {
-        return (src < 10 ? `0${ src }` : src)
-    }
-
     static initialState = {
-
         message: null,
+        isFetching: false,
         roomInfo: null,
-        chatHistory: [],
+        chatHistoryAll: [],
 
-        // This section is for game play
         data: {
             history: [{
                 x: null,
@@ -34,9 +31,12 @@ class Config extends Component {
                     return Array(Config.brdSize).fill(null)
                 })
             }],
+            chatHistory: [],
             nextMove: Config.xPlayer,
             stepNumber: 0,
             winCells: null,
+            isSaveGame: false,
+            countDownTimer: Config.countDownTimer,
         }
     };
 }

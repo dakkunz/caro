@@ -13,6 +13,7 @@ import { useHistory } from "react-router-dom";
 // game actions
 import useEvent from "@/hooks/useEvent";
 import actionChat from "@/actions/actionChat";
+import actionChatRoom from "@/actions/actionChatRoom";
 import actionJoinRoom from "@/actions/actionJoinRoom";
 
 const useProvideSocket = () => {
@@ -76,22 +77,20 @@ const useProvideSocket = () => {
           .on(SOCKET_TYPES.ROOM__JOIN_GAME_SUCCESS, (gameInfo) => {
             push("/room", { gameInfo });
           })
-		  // game
-		  .on(SOCKET_TYPES.JOIN_ROOM_QUICK_SUCCESS, (roomInfo) => {
-			  console.log(roomInfo);
-			dispatch(actionJoinRoom(roomInfo));
-		  })
+          // game
+          .on(SOCKET_TYPES.JOIN_ROOM_QUICK_SUCCESS, (roomInfo) => {
+            console.log(roomInfo);
+            dispatch(actionJoinRoom(roomInfo));
+          })
           .on(SOCKET_TYPES.CHAT, (data) => {
             dispatch(actionChat(data));
+            dispatch(actionChatRoom(data));
           })
           .on(SOCKET_TYPES.MOVE, (data) => {
             console.log("new move");
             useEvent.emit("add-new-move", data);
-            // useEvent.removeListener("add-new-move");
           })
           .on(SOCKET_TYPES.DISCONNECT_ROOM, (data) => {
-			console.log("disconnect");
-			console.log(data);
             if (data.id) dispatch(actionJoinRoom(data));
           });
       });

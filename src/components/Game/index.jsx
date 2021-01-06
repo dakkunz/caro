@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import React, { useState, useEffect } from "react";
 import { Button, Card, FormControl } from "react-bootstrap";
+import Dialog from "react-bootstrap-dialog";
 import { Statistic } from "antd";
 import Board from "./components/Board";
 import Status from "./components/Status";
@@ -12,7 +13,11 @@ import useEvent from "@/hooks/useEvent";
 import actionClick from "@/actions/actionClick";
 import actionJoinRoom from "@/actions/actionJoinRoom";
 import actionChat from "@/actions/actionChat";
+import actionChatRoom from "@/actions/actionChatRoom";
 import actionRefresh from "@/actions/actionRefresh";
+import actionRefreshGame from "@/actions/actionRefreshGame";
+import actionSaveGame from "@/actions/actionSaveGame";
+import actionRequest from "@/actions/actionRequest";
 
 import "./styles.scss";
 import { useHistory } from "react-router-dom";
@@ -28,6 +33,11 @@ const Game = (props) => {
   const { winCells } = props;
   const { roomInfo } = props;
   const { message } = props;
+  const { isSaveGame } = props;
+  const { isFetching } = props;
+  const { countDownTimer } = props;
+  const { chatHistory } = props;
+  const { chatHistoryAll } = props;
 
   const socket = useSocket();
 
@@ -35,56 +45,171 @@ const Game = (props) => {
 
   const [isEndGame, setIsEndGame] = useState(false);
   const [isOverTime, setIsOverTime] = useState(false);
+  const [isSurrender, setIsSurrender] = useState(false);
+  const [isDraw, setIsDraw] = useState(false);
   const [winner, setWinner] = useState(null);
-  const [countDownTimer, setCountDownTimer] = useState(Date.now() + 20000);
-
-  useEffect(() => {
-    let winner = null;
-
-    const isOnePlayerDisconnected =
-      roomInfo.playerO === "DISCONNECTED" ||
-      roomInfo.playerX === "DISCONNECTED";
-
-    const isEndGame = isOnePlayerDisconnected || isOverTime || winCells;
-
-    setIsEndGame(isEndGame);
-
-    if (isEndGame) {
-      if (winCells || isOverTime) {
-        winner = nextMove === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
-      } else if (isOnePlayerDisconnected) {
-        winner =
-          roomInfo.playerX === "DISCONNECTED" ? Config.oPlayer : Config.xPlayer;
-      }
-      //save game
-    } else {
-      winner = null;
-    }
-
-    setWinner(winner);
-  }, [roomInfo, isOverTime, winCells, nextMove]);
+  const [dialog, setDialog] = useState("");
 
   useEvent.removeAllListeners();
 
   useEvent.on("add-new-move", (data) => {
-    console.log("Doi thu da danh");
     handleClick(data.row, data.col);
     useEvent.removeAllListeners();
   });
 
-  const { chatHistory } = props;
+  const setupSocket = () => {
+    socket.off("refresh-game-request");
+    socket.off("refresh-game-result");
+    socket.off("draw-request");
+    socket.off("draw-result");
+    // socket.off("surrender-request");
+    // socket.off("surrender-result");
+
+    // Play again
+    socket.on("refresh-game-request", (data) => {
+      doConfirm(
+        "Đối thủ muốn chơi lại !",
+        () => {
+          socket.emit("refresh-game-result", {
+            message: "yes",
+            nextMove: data,
+          });
+          actions.actionRefreshGame(data);
+          setIsSurrender(false);
+          setIsDraw(false);
+        },
+        () => {
+          socket.emit("refresh-game-result", {
+            message: "no",
+          });
+        }
+      );
+    });
+
+    socket.on("refresh-game-result", (data) => {
+      if (data.message === "yes") {
+        actions.actionRefreshGame(data.nextMove);
+        setIsSurrender(false);
+        setIsDraw(false);
+        dialog.showAlert(`Đối thủ đã đồng ý!`);
+      } else {
+        dialog.showAlert(`Đối thủ không đồng ý!`);
+      }
+    });
+
+    // Surrender
+    socket.on("surrender-request", () => {
+      socket.emit("surrender-result");
+      actions.actionRequest(true, `Đối thủ đầu hàng, bạn đã thắng !`);
+      const winner = isPlayerX ? Config.xPlayer : Config.oPlayer;
+      setWinner(winner);
+      setIsSurrender(true);
+    });
+
+    socket.on("surrender-result", () => {
+      actions.actionRequest(true, `Bạn đã đầu hàng !`);
+      const winner = isPlayerX ? Config.oPlayer : Config.xPlayer;
+      setWinner(winner);
+      setIsSurrender(true);
+    });
+
+    //Draw
+    socket.on("draw-request", () => {
+      doConfirm(
+        "Đối thủ xin hoà trận đấu !",
+        () => {
+          socket.emit("draw-result", {
+            message: "yes",
+          });
+          actions.actionRequest(true, `Chấp nhận hoà !`);
+          const winner = isPlayerX ? Config.oPlayer : Config.xPlayer;
+          setWinner(winner);
+          setIsDraw(true);
+        },
+        () => {
+          socket.emit("draw-result", {
+            message: "no",
+          });
+          actions.actionRequest(false, null);
+        }
+      );
+    });
+
+    socket.on("draw-result", (data) => {
+      if (data.message === "yes") {
+        actions.actionRequest(true, `Đối thủ đã chấp nhận hoà !`);
+        dialog.showAlert(`Đối thủ đã chấp nhận hoà!`);
+        const winner = isPlayerX ? Config.xPlayer : Config.oPlayer;
+        setWinner(winner);
+        setIsDraw(true);
+      } else {
+        actions.actionRequest(false, null);
+        dialog.showAlert(`Đối thủ đã từ chối hoà!`);
+      }
+    });
+  };
+
+  const doConfirm = (message, callbackYes, callbackNo) => {
+    dialog.show({
+      title: "Xác nhận",
+      body: message,
+      actions: [
+        Dialog.CancelAction(() => callbackNo()),
+        Dialog.OKAction(() => callbackYes()),
+      ],
+      bsSize: "sm",
+      onHide: (dialog) => {},
+    });
+  };
+
+  const requestSurrender = () => {
+    doConfirm(
+      "Bạn muốn đầu hàng ván này ?",
+      () => {
+        socket.emit("surrender-request");
+      },
+      () => {}
+    );
+  };
+
+  const requestDraw = () => {
+    doConfirm(
+      "Bạn muốn xin hoà trận đấu ?",
+      () => {
+        socket.emit("draw-request");
+        actions.actionRequest(true, `Đang xin hoà...!`);
+      },
+      () => {}
+    );
+  };
+
+  const requestRefreshGame = () => {
+    const nextMove =
+      winner === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
+    doConfirm(
+      "Bạn muốn chơi lại ?",
+      () => {
+        socket.emit("refresh-game-request", nextMove);
+        actions.actionRequest(true, `Đang xin chơi lại...!`);
+      },
+      () => {}
+    );
+  };
+
+  setupSocket();
+
   const [chatMessage, setChatMessage] = useState("");
   const listChat = [];
-  for (let i = 0; i < chatHistory.length; i++) {
-    const color = chatHistory[i].sender === user.name ? "blue" : "red";
+  for (let i = 0; i < chatHistoryAll.length; i++) {
+    const color = chatHistoryAll[i].sender === user.name ? "blue" : "red";
     const style = { color: color };
     listChat.push(
       <b style={style} key={i}>
-        {chatHistory[i].sender}
+        {chatHistoryAll[i].sender}
       </b>
     );
-    listChat.push(": " + chatHistory[i].message);
-    listChat.push(<br key={i + chatHistory.length}></br>);
+    listChat.push(": " + chatHistoryAll[i].message);
+    listChat.push(<br key={i + chatHistoryAll.length}></br>);
   }
 
   const current = history[stepNumber];
@@ -95,6 +220,84 @@ const Game = (props) => {
   }
   const rivalName = isPlayerX ? roomInfo.playerO : roomInfo.playerX;
   const rivalImage = isPlayerX ? roomInfo.pictureO : roomInfo.pictureX;
+
+  useEffect(() => {
+    let calculateWinner = null;
+
+    const isOnePlayerDisconnected =
+      roomInfo.playerO === "DISCONNECTED" ||
+      roomInfo.playerX === "DISCONNECTED";
+
+    const isEndGame =
+      isOnePlayerDisconnected ||
+      isOverTime ||
+      winCells ||
+      isSurrender ||
+      isDraw;
+
+    setIsEndGame(isEndGame);
+
+    const saveGame = () => {
+      console.log("save game" + calculateWinner);
+      let isWinner = false;
+
+      if (
+        (calculateWinner === Config.xPlayer && isPlayerX) ||
+        (calculateWinner === Config.oPlayer && !isPlayerX)
+      ) {
+        isWinner = true;
+      }
+      if (isWinner) {
+        let winnerName;
+        if (isWinner) {
+          winnerName = user.name;
+        } else winnerName = rivalName;
+
+        console.log(history);
+        console.log(chatHistory);
+        console.log(winCells);
+        if (!isDraw) console.log(winnerName);
+        else console.log("DRAW");
+      }
+      actions.actionSaveGame();
+    };
+
+    if (isEndGame) {
+      console.log("end game");
+      if (winCells || isOverTime) {
+        calculateWinner =
+          nextMove === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
+      } else if (isOnePlayerDisconnected) {
+        calculateWinner =
+          roomInfo.playerX === "DISCONNECTED" ? Config.oPlayer : Config.xPlayer;
+      } else if (isSurrender && winner) {
+        calculateWinner = winner;
+      } else if (isDraw && winner){
+        calculateWinner = winner;
+      }
+
+      if (!isSaveGame && calculateWinner) {
+        saveGame();
+      }
+    }
+
+    setWinner(calculateWinner);
+  }, [
+    roomInfo,
+    isOverTime,
+    winCells,
+    nextMove,
+    history,
+    chatHistory,
+    isPlayerX,
+    isSaveGame,
+    actions,
+    user,
+    rivalName,
+    isDraw,
+    isSurrender,
+    winner,
+  ]);
 
   const { push } = useHistory();
   const exitGame = () => {
@@ -254,7 +457,7 @@ const Game = (props) => {
   const userClick = (row, col) => {
     const { nextMove } = props;
 
-    if (isEndGame) {
+    if (isEndGame || isFetching) {
       return;
     }
 
@@ -298,8 +501,6 @@ const Game = (props) => {
 
       actions.actionClick(_history, _nextMove, _winCells);
 
-      setCountDownTimer(Date.now() + 20000);
-
       return true;
     }
     return false;
@@ -326,6 +527,7 @@ const Game = (props) => {
         isOverTime={isOverTime}
         winner={winner}
       />
+      <Dialog ref={(el) => setDialog(el)} />
       <div className="board-game">
         <div>
           <Card className="card">
@@ -347,7 +549,11 @@ const Game = (props) => {
               Thoát game
             </Button>
             {isEndGame && rivalName !== "DISCONNECTED" && (
-              <Button className="logout-button" variant="danger">
+              <Button
+                className="logout-button"
+                variant="danger"
+                onClick={() => requestRefreshGame()}
+              >
                 Đấu lại
               </Button>
             )}
@@ -368,6 +574,24 @@ const Game = (props) => {
               />
               <br></br>
             </Card.Body>
+            {!isEndGame && rivalName !== "DISCONNECTED" && (
+              <Button
+                className="logout-button"
+                variant="danger"
+                onClick={() => requestDraw()}
+              >
+                Cầu hoà
+              </Button>
+            )}
+            {!isEndGame && rivalName !== "DISCONNECTED" && (
+              <Button
+                className="logout-button"
+                variant="danger"
+                onClick={() => requestSurrender()}
+              >
+                Xin thua
+              </Button>
+            )}
           </Card>
         </div>
         <div>
@@ -381,8 +605,9 @@ const Game = (props) => {
         <div>
           {!isEndGame && (
             <Countdown
-              value={countDownTimer}
-              format="ss:SS"
+              value={Date.now() + countDownTimer}
+              // value={Date.now() + 50000}
+              format="ss"
               onFinish={handleOverTime}
             />
           )}
@@ -415,7 +640,11 @@ const mapStateToProps = (state) => {
     winCells: state.game.data.winCells,
     message: state.game.message,
     roomInfo: state.roomReducers.roomInfo,
-    chatHistory: state.roomReducers.chatHistory,
+    chatHistory: state.game.data.chatHistory,
+    isSaveGame: state.game.data.isSaveGame,
+    isFetching: state.game.isFetching,
+    countDownTimer: state.game.data.countDownTimer,
+    chatHistoryAll: state.roomReducers.chatHistoryAll,
   };
 };
 
@@ -426,7 +655,11 @@ const mapDispatchToProps = (dispatch) => {
         actionClick,
         actionJoinRoom,
         actionChat,
+        actionChatRoom,
         actionRefresh,
+        actionRefreshGame,
+        actionSaveGame,
+        actionRequest,
       },
       dispatch
     ),

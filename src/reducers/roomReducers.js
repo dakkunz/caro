@@ -9,10 +9,10 @@ export default function handleRoom(state = Config.initialState, action) {
 				roomInfo: action.roomInfo,
 			};
 
-		case ROOM_ACTIONS.CHAT:
+		case ROOM_ACTIONS.CHAT_ROOM:
 			return {
 				...state,
-				chatHistory: [...state.chatHistory, action.message],
+				chatHistoryAll: [...state.chatHistoryAll, action.message],
 			};
 
 		case ROOM_ACTIONS.REFRESH:

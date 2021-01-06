@@ -12,7 +12,7 @@ const Status = (props) => {
     let message;
 
     if (rivalName === 'DISCONNECTED') {
-        message = 'Đối thủ đã thoát, bạn đã thắng  !';
+        message = 'Đối thủ đã thoát!';
     }
     else if (messages) {
         message = messages;

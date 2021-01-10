@@ -10,9 +10,11 @@ import SocketProvider from "@/providers/SocketProvider";
 import { privateRoutes } from "@/routers";
 import { doAxiosRequestIntercept } from "@/config";
 import AppLayout from "@/components/AppLayout";
+import withEmailVerified from "@/hocs/withEmailVerified";
+import { EmailVerify } from "@/routers/lazyRoutes";
 
 const Main = () => {
-	const { isLoading, error, getAccessTokenSilently } = useAuth0();
+	const { isLoading, error, getAccessTokenSilently, user } = useAuth0();
 
 	doAxiosRequestIntercept(getAccessTokenSilently);
 
@@ -23,16 +25,23 @@ const Main = () => {
 	) : (
 		<AppLayout>
 			<Switch>
+				<Route
+					key="email-verify"
+					path="/email-verify"
+					exact
+					component={EmailVerify}
+				/>
 				<SocketProvider>
 					{privateRoutes.map(({ component, ...route }) => (
 						<Route
 							{...route}
-							component={withAuthenticationRequired(component)}
+							component={withAuthenticationRequired(
+								withEmailVerified(user)(component)
+							)}
 						/>
 					))}
 				</SocketProvider>
 			</Switch>
-			<Switch></Switch>
 		</AppLayout>
 	);
 };

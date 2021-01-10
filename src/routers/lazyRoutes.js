@@ -11,4 +11,7 @@ const delayImport = (ms = 300) => (promise) =>
 export const Home = lazy(() => delayImport()(import("@/pages/Home")));
 export const Game = lazy(() => delayImport()(import("@/pages/Game")));
 export const Room = lazy(() => delayImport()(import("@/pages/Room")));
+export const EmailVerify = lazy(() =>
+	delayImport()(import("@/pages/EmailVerify"))
+);
 export const NotFound = lazy(() => import("@/pages/NotFound"));

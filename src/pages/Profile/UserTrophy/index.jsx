@@ -1,21 +1,18 @@
+import useAuth from "@/hooks/useAuth";
 import { TrophyOutlined } from "@ant-design/icons";
-import { useAuth0 } from "@auth0/auth0-react";
 import { Avatar, Progress, Tag } from "antd";
 import React from "react";
-import { useSelector } from "react-redux";
 import "./style.scss";
 
 const UserTrophy = () => {
-	const { user } = useAuth0();
-
 	const {
-		trophy: { win, lost, total, draw, point },
-	} = useSelector((state) => state.profile);
+		user: { picture, displayName, win, lost, point, total, draw },
+	} = useAuth();
 
 	return (
 		<div className="user-trophy-wrapper">
-			<Avatar shape="circle" src={user.picture} size={150} />
-			<div className="name">{user.nickname}</div>
+			<Avatar shape="circle" src={picture} size={150} />
+			<div className="name">{displayName}</div>
 			<div className="trophy">
 				<TrophyOutlined /> <span>{point}</span>
 			</div>

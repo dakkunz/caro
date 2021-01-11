@@ -17,6 +17,7 @@ const onRedirectCallback = (appState) => {
 		appState && appState.returnTo ? appState.returnTo : window.location.pathname
 	);
 };
+
 const App = () => (
 	<Auth0Provider
 		domain={authConfig.domain}
@@ -24,6 +25,7 @@ const App = () => (
 		audience={authConfig.audience}
 		redirectUri={window.location.origin}
 		onRedirectCallback={onRedirectCallback}
+		scope="openid profile email"
 	>
 		<Provider store={store}>
 			<BrowserRouter>

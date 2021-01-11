@@ -42,9 +42,7 @@ const useProvideSocket = () => {
 						);
 					})
 					.on(SOCKET_TYPES.USER_ONLINE, (user) => {
-						setTimeout(() => {
-							dispatch(updateOnlineUser([...list, user]));
-						}, 2000);
+						dispatch(updateOnlineUser([...list, user]));
 					})
 					.on(SOCKET_TYPES.GET_ONLINE, (list) => {
 						dispatch(updateOnlineUser(list));

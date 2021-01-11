@@ -1,4 +1,4 @@
-import { Home, Game, Room, NotFound } from "@/routers/lazyRoutes";
+import { Home, Game, Room, NotFound, Profile } from "@/routers/lazyRoutes";
 
 const publicRoutes = [
 	{
@@ -23,6 +23,11 @@ const privateRoutes = [
 		key: "room",
 		path: "/room",
 		component: Room,
+	},
+	{
+		key: "profile",
+		path: "/profile",
+		component: Profile,
 	},
 ];
 

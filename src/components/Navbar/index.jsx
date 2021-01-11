@@ -1,14 +1,14 @@
 // libs
-import { useAuth0 } from "@auth0/auth0-react";
 import { Avatar, Dropdown, Menu } from "antd";
 import React from "react";
 // others
 import "./styles.scss";
 import useSocket from "@/hooks/useSocket";
 import { useHistory } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
 
 const Navbar = () => {
-	const { user, logout } = useAuth0();
+	const { user, logout } = useAuth();
 	const socket = useSocket();
 	const { push } = useHistory();
 	const submitLogout = () => {
@@ -32,7 +32,7 @@ const Navbar = () => {
 					trigger={["click"]}
 				>
 					<div className="user-display">
-						<div>{user.nickname}</div>
+						<div>{user.displayName || user.name}</div>
 						<Avatar src={user.picture} shape="circle" />
 					</div>
 				</Dropdown>

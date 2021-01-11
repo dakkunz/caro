@@ -8,15 +8,13 @@ import AuthenticatingIndicator from "@/components/AuthenticatingIndicator";
 import SocketProvider from "@/providers/SocketProvider";
 // routers
 import { privateRoutes } from "@/routers";
-import { doAxiosRequestIntercept } from "@/config";
 import AppLayout from "@/components/AppLayout";
 import withEmailVerified from "@/hocs/withEmailVerified";
 import { EmailVerify } from "@/routers/lazyRoutes";
+import FetchUserInfo from "@/components/FetchUserInfo";
 
 const Main = () => {
-	const { isLoading, error, getAccessTokenSilently, user } = useAuth0();
-
-	doAxiosRequestIntercept(getAccessTokenSilently);
+	const { isLoading, error, user } = useAuth0();
 
 	return isLoading ? (
 		<AuthenticatingIndicator />
@@ -40,6 +38,7 @@ const Main = () => {
 							)}
 						/>
 					))}
+					<FetchUserInfo />
 				</SocketProvider>
 			</Switch>
 		</AppLayout>

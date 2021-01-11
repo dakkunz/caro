@@ -4,6 +4,7 @@ import roomReducers from "./roomReducers";
 import onlineUsers from "./onlineUsers";
 import roomList from "./roomList";
 import room from "./room";
+import profile from "./profile";
 
 export default combineReducers({
 	game,
@@ -11,4 +12,5 @@ export default combineReducers({
 	roomReducers,
 	onlineUsers,
 	roomList,
+	profile,
 });

@@ -31,3 +31,7 @@ export const ROOM_ACTIONS = {
 	SET_IS_JOIN_GAME: "SET_IS_JOIN_GAME",
 	SET_TIME: "SET_TIME",
 };
+
+export const PROFILE_ACTIONS = {
+	GET_USER_INFO: "GET_USER_INFO",
+};

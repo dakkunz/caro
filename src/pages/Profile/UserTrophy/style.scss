@@ -1,0 +1,28 @@
+.profile-wrapper .user-trophy-wrapper {
+	border: solid #40a9ff 1px;
+	border-radius: 10px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	.name {
+		margin-top: 10px;
+		font-size: 20px;
+	}
+	.trophy {
+		margin-top: 20px;
+		font-size: 30px;
+	}
+	.rate {
+		margin-top: 20px;
+	}
+	.count {
+		.ant-tag {
+			transform: scale(1.5);
+			margin: 0 20px;
+		}
+		margin-top: 15px;
+	}
+}

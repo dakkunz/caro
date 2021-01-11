@@ -32,13 +32,13 @@ export const columns = [
 			<RoomName roomName={roomName} hasPassword={password ? true : false} />
 		),
 	},
-	{
-		title: "Host",
-		dataIndex: "host",
-		key: "host",
-		width: "25%",
-		render: ({ nickname }) => <span>{nickname}</span>,
-	},
+	// {
+	// 	title: "Host",
+	// 	dataIndex: "host",
+	// 	key: "host",
+	// 	width: "25%",
+	// 	render: ({ nickname }) => <span>{nickname}</span>,
+	// },
 	{
 		title: "Players",
 		dataIndex: "players",

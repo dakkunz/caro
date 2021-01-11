@@ -13,8 +13,6 @@ class Config extends Component {
         O: 'blue'
     };
 
-    static countDownTimer = 30000;
-
     static defaultAvatar = "https://simpleicon.com/wp-content/uploads/account.png";
 
     static initialState = {
@@ -36,7 +34,6 @@ class Config extends Component {
             stepNumber: 0,
             winCells: null,
             isSaveGame: false,
-            countDownTimer: Config.countDownTimer,
         }
     };
 }

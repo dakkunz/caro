@@ -12,7 +12,6 @@ export default function handleGame(state = Config.initialState, action) {
           stepNumber: action.history.length - 1,
           nextMove: action.nextMove,
           winCells: action.winCells,
-          countDownTimer: Config.countDownTimer,
         },
       };
 
@@ -32,23 +31,22 @@ export default function handleGame(state = Config.initialState, action) {
                   return Array(Config.brdSize).fill(null);
                 }),
             },
-		  ],
-		  chatHistory: [],
+          ],
+          chatHistory: [],
           nextMove: action.nextMove,
           stepNumber: 0,
           winCells: null,
           isSaveGame: false,
-          countDownTimer: Config.countDownTimer,
         },
       };
 
     case GAME_ACTIONS.CHAT:
       return {
-		...state,
-		data: {
-			...state.data,
-			chatHistory: [...state.data.chatHistory, action.message],
-		  },
+        ...state,
+        data: {
+          ...state.data,
+          chatHistory: [...state.data.chatHistory, action.message],
+        },
       };
 
     case GAME_ACTIONS.SAVE_GAME:

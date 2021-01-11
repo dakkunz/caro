@@ -25,6 +25,14 @@ export default (state = initialState, { type, payload }) => {
 				...state,
 				isJoinGame: payload,
 			};
+		case ROOM_ACTIONS.SET_TIME:
+			return {
+				...state,
+				roomInfo: {
+					...state.roomInfo,
+					time: payload,
+				},
+			};
 		case ROOM_ACTIONS.REFRESH:
 			return {
 				...state,

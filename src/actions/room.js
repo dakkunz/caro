@@ -19,3 +19,8 @@ export const setIsJoinGame = (isJoinGame) => ({
 	type: ROOM_ACTIONS.SET_IS_JOIN_GAME,
 	payload: isJoinGame,
 });
+
+export const setTime = (time) => ({
+	type: ROOM_ACTIONS.SET_TIME,
+	payload: time,
+})

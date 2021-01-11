@@ -68,6 +68,10 @@ const useProvideSocket = () => {
 						dispatch(joinRoomSuccess(roomInfo));
 						push("/room", { roomInfo });
 					})
+					.on("join-room-quick-success", (roomInfo) => {
+						dispatch(joinRoomSuccess(roomInfo));
+						push("/room", { roomInfo });
+					})
 					.on("room-list-update-room", (roomInfo) => {
 						dispatch(
 							updateRoomList(
@@ -135,6 +139,7 @@ const useProvideSocket = () => {
 						dispatch(setIsJoinGame(true));
 					})
 					.on(SOCKET_TYPES.JOIN_ROOM_QUICK_SUCCESS, (roomInfo) => {
+						console.log("join-quick-room");
 						console.log(roomInfo);
 						dispatch(actionJoinRoom(roomInfo));
 					})

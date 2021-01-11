@@ -15,8 +15,6 @@ const Room = () => {
 
 	const { isJoinGame } = useSelector((state) => state.room);
 
-	console.log(roomInfo);
-
 	return withRoomInfoRequired(roomInfo)(
 		<>
 			{isJoinGame ? (

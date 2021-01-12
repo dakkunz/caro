@@ -211,7 +211,8 @@ const Game = (props) => {
     let calculateWinner = null;
 
     const isOnePlayerDisconnected =
-      roomInfo.players.O.name === "DISCONNECTED" || roomInfo.players.X === "DISCONNECTED";
+      roomInfo.players.O.name === "DISCONNECTED" ||
+      roomInfo.players.X === "DISCONNECTED";
 
     const isEndGame =
       isOnePlayerDisconnected ||
@@ -246,8 +247,9 @@ const Game = (props) => {
             history,
             chatHistory,
             winCells,
-			isDraw,
-			winner: isDraw ? null : user.sub,
+            isDraw,
+            winner: isDraw ? null : user.sub,
+            date: new Date(),
           })
           .then((res) => {
             console.log(res);
@@ -288,8 +290,8 @@ const Game = (props) => {
     isDraw,
     isSurrender,
     winner,
-	chatHistory,
-	axios
+    chatHistory,
+    axios,
   ]);
 
   const { push } = useHistory();
@@ -552,7 +554,11 @@ const Game = (props) => {
                 <b>{rival.name}</b>
               </Card.Text>
               <img
-                src={rival.name !== "DISCONNECTED" ? rival.picture : Config.defaultAvatar}
+                src={
+                  rival.name !== "DISCONNECTED"
+                    ? rival.picture
+                    : Config.defaultAvatar
+                }
                 className="avatar-small"
                 alt="rivalAvatar"
               />
@@ -588,10 +594,7 @@ const Game = (props) => {
         </div>
         <div>
           {!isEndGame && <Timer setIsOverTime={setIsOverTime} />}
-          <Chat
-            socket={socket}
-            rivalName={rival.name}
-          />
+          <Chat socket={socket} rivalName={rival.name} />
         </div>
       </div>
     </div>

@@ -1,5 +1,4 @@
 import actionChatRoom from "@/actions/actionChatRoom";
-import actionJoinRoom from "@/actions/actionJoinRoom";
 import { actionChat } from "@/actions/gameActions";
 import { setIsJoinGame } from "@/actions/room";
 import { SOCKET_URL } from "@/config/URL";
@@ -53,10 +52,10 @@ const useProvideSocket = () => {
 				})
 				.on(SOCKET_TYPES.MOVE, (data) => {
 					useEventClick.emit("add-new-move", data);
-				})
-				.on(SOCKET_TYPES.DISCONNECT_ROOM, (data) => {
-					if (data.id) dispatch(actionJoinRoom(data));
 				});
+			// .on(SOCKET_TYPES.DISCONNECT_ROOM, (data) => {
+			// 	if (data.id) dispatch(actionJoinRoom(data));
+			// });
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dispatch, push, socketInstance]);

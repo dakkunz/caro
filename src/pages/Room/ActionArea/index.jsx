@@ -1,4 +1,5 @@
 import useSocket from "@/hooks/useSocket";
+import ActionAreaSocket from "@/pages/Room/ActionAreaSocket";
 import { ArrowLeftOutlined, SmileOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import React from "react";
@@ -9,7 +10,7 @@ import "./style.scss";
 const ActionArea = () => {
 	const socket = useSocket();
 	const { roomInfo } = useSelector((state) => state.room);
-	const { push } = useHistory();
+	const { replace } = useHistory();
 
 	return (
 		<div className="action-area-wrapper">
@@ -18,7 +19,7 @@ const ActionArea = () => {
 				type="primary"
 				onClick={() => {
 					socket.emit("leave-room", roomInfo.id);
-					push("/");
+					replace("/");
 				}}
 			>
 				<ArrowLeftOutlined />
@@ -33,6 +34,7 @@ const ActionArea = () => {
 				<SmileOutlined />
 				Play
 			</Button>
+			{socket && <ActionAreaSocket />}
 		</div>
 	);
 };

@@ -8,8 +8,6 @@ const Timer = (props) => {
 	const { roomInfo: { time = 0 } = {} } = useSelector((state) => state.room);
 	const [count, setCount] = useState(time);
 
-	// const { Countdown } = Statistic;
-
 	useEffect(() => {
 		const counter = setInterval(() => {
 			setCount((count) => count - 1);
@@ -38,11 +36,9 @@ const Timer = (props) => {
 
 	const handleResetOverTime = (e) => {
 		props.setIsOverTime(false);
-	}
+	};
 
-	return (
-		<div>{count}</div>
-	);
+	return <div>{count}</div>;
 };
 
 export default Timer;

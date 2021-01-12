@@ -3,13 +3,16 @@ import { useSelector } from "react-redux";
 
 const useAuth = () => {
 	const { user, ...props } = useAuth0();
-	const { info } = useSelector((state) => state.profile);
+	const { info, trophy } = useSelector((state) => state.profile);
 
 	return {
-		user: {
-			...user,
-			...info,
-		},
+		user: user
+			? {
+					...user,
+					...info,
+					trophy,
+			  }
+			: user,
 		...props,
 	};
 };

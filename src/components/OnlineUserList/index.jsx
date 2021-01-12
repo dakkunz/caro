@@ -6,9 +6,12 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import "./style.scss";
+import OnlineUserSocket from "@/components/OnlineUserList/OnlineUserSocket";
+import useSocket from "@/hooks/useSocket";
 
-const OnlineUserList = () => {
+const OnlineUserList = ({ withInvite = false }) => {
 	const { list } = useSelector((state) => state.onlineUsers);
+	const socket = useSocket();
 
 	return (
 		<Card
@@ -23,9 +26,16 @@ const OnlineUserList = () => {
 			<List
 				dataSource={list}
 				size="small"
-				renderItem={(user) => <OnlineUserListItem user={user} key={user.sub} />}
+				renderItem={(user) => (
+					<OnlineUserListItem
+						user={user}
+						key={user.sub}
+						withInvite={withInvite}
+					/>
+				)}
 				rowKey={(user) => user.sub}
 			/>
+			{socket && <OnlineUserSocket />}
 		</Card>
 	);
 };

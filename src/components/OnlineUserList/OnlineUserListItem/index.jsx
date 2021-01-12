@@ -17,11 +17,11 @@ const OnlineUserListItem = ({ user }) => {
 						<Avatar src={user.picture} />
 					</Badge>
 				}
-				title={user.name}
+				title={user.displayName || user.name}
 				description={
 					<div className="user-desc">
 						<div className="user-trophy">
-							<TrophyOutlined /> <span>555</span>
+							<TrophyOutlined /> <span>{(user.trophy || {}).point}</span>
 						</div>
 						<Button type="link" icon={<UserOutlined />}>
 							Profile

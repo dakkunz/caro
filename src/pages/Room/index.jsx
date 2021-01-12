@@ -1,6 +1,6 @@
 import Game from "@/components/Game";
 import useRouter from "@/hooks/useRouter";
-import OnlineUserList from "@/pages/Home/OnlineUserList";
+import OnlineUserList from "@/components/OnlineUserList";
 import ActionArea from "@/pages/Room/ActionArea";
 import ChatArea from "@/pages/Room/ChatArea";
 import PlayerArea from "@/pages/Room/PlayersArea";

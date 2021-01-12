@@ -5,44 +5,39 @@ import { Button } from "antd";
 import React, { useState } from "react";
 // import useSocket from "@/hooks/useSocket";
 import "./style.scss";
+import RoomActionSocket from "@/pages/Home/RoomActionSocket";
+import useSocket from "@/hooks/useSocket";
 
-const RoomActions = (props) => {
-  const [showCreate, setShowCreate] = useState(false);
-  const [showQuickPlay, setShowQuickPlay] = useState(false);
+const RoomActions = () => {
+	const [showCreate, setShowCreate] = useState(false);
+	const [showQuickPlay, setShowQuickPlay] = useState(false);
+	const socket = useSocket();
 
-  // const socket = useSocket();
+	const handleQuickPlay = () => {
+		// findRival();
+		setShowQuickPlay(true);
+	};
 
-  // const findRival = () => {
-  //   // socket.emit("join-room-quick");
-  // };
+	const cancelFinRival = () => {
+		setShowQuickPlay(false);
+		// socket.emit("cancel-join-room-quick", props.user);
+	};
 
-  const handleQuickPlay = () => {
-    // findRival();
-    setShowQuickPlay(true);
-  };
+	return (
+		<div className="room-actions-wrapper">
+			<Button onClick={() => handleQuickPlay()}>
+				<SmileTwoTone />
+				Quick Play
+			</Button>
+			<Button onClick={() => setShowCreate(true)}>
+				<PlusCircleTwoTone />
+				Create Room
+			</Button>
 
-  const cancelFinRival = () => {
-    setShowQuickPlay(false)
-    // socket.emit("cancel-join-room-quick", props.user);
-  }
-
-  return (
-    <div className="room-actions-wrapper">
-      <Button onClick={() => handleQuickPlay()}>
-        <SmileTwoTone />
-        Quick Play
-      </Button>
-      <Button onClick={() => setShowCreate(true)}>
-        <PlusCircleTwoTone />
-        Create Room
-      </Button>
-
-      <RoomModal show={showCreate} hide={() => setShowCreate(false)} />
-      <QuickPlayModal
-        show={showQuickPlay}
-        hide={() => cancelFinRival()}
-      />
-    </div>
-  );
+			<RoomModal show={showCreate} hide={() => setShowCreate(false)} />
+			<QuickPlayModal show={showQuickPlay} hide={() => cancelFinRival()} />
+			{socket && <RoomActionSocket />}
+		</div>
+	);
 };
 export default RoomActions;

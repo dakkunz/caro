@@ -1,24 +1,15 @@
 // libs
-import {
-	fetchSelectedUserLoading,
-	fetchSelectedUserSuccess,
-} from "@/actions/onlineUsers";
 import ProfileModal from "@/components/OnlineUserList/ProfileModal";
-import useAxios from "@/hooks/useAxios";
-import useSocket from "@/hooks/useSocket";
-import { SmileOutlined, TrophyOutlined, UserOutlined } from "@ant-design/icons";
+import { TrophyOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Button, List } from "antd";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 // components
 // others
 import "./styles.scss";
 
-const OnlineUserListItem = ({ user, withInvite }) => {
-	const socket = useSocket();
-	const dispatch = useDispatch();
-	const axios = useAxios();
+const OnlineUserListItem = ({ user }) => {
 	const [show, setShow] = useState(false);
+	const [userSub, setUserSub] = useState(null);
 
 	return (
 		<List.Item className="online-user-list-item-wrapper">
@@ -38,31 +29,16 @@ const OnlineUserListItem = ({ user, withInvite }) => {
 							type="link"
 							icon={<UserOutlined />}
 							onClick={() => {
+								setUserSub(user.sub);
 								setShow(true);
-								dispatch(fetchSelectedUserLoading(true));
-								axios
-									.post("/users/info/search", { sub: user.sub })
-									.then((res) => {
-										dispatch(fetchSelectedUserSuccess(res.data));
-									})
-									.finally(() => dispatch(fetchSelectedUserLoading(false)));
 							}}
 						>
-							Profile
+							Thông tin
 						</Button>
-						{withInvite && (
-							<Button
-								type="link"
-								icon={<SmileOutlined />}
-								onClick={() => socket.emit("invite-room", user.socketId)}
-							>
-								Invite
-							</Button>
-						)}
 					</div>
 				}
 			/>
-			<ProfileModal show={show} hide={() => setShow(false)} />
+			<ProfileModal show={show} hide={() => setShow(false)} userSub={userSub} />
 		</List.Item>
 	);
 };

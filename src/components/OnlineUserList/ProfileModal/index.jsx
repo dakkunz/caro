@@ -1,28 +1,49 @@
+import {
+	fetchSelectedUserLoading,
+	fetchSelectedUserSuccess,
+} from "@/actions/onlineUsers";
+import useAxios from "@/hooks/useAxios";
 import { LoadingOutlined, TrophyOutlined } from "@ant-design/icons";
-import { Modal, Progress, Spin, Tag } from "antd";
+import { message, Modal, Progress, Spin, Tag } from "antd";
 import Avatar from "antd/lib/avatar/avatar";
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
 
-const ProfileModal = ({ show, hide }) => {
+const ProfileModal = ({ show, hide, userSub }) => {
+	const dispatch = useDispatch();
+	const axios = useAxios();
 	const {
 		selectedUser: {
 			isLoading,
 			data: {
 				info: { displayName, picture },
-				trophy: { point, win, lost, draw, total },
+				trophy: { point = 0, win = 0, lost = 0, draw = 0, total = 0 },
 			},
 		},
 	} = useSelector((state) => state.onlineUsers);
 
+	useEffect(() => {
+		if (userSub && show) {
+			dispatch(fetchSelectedUserLoading(true));
+			axios
+				.post("/users/info/search", { sub: userSub })
+				.then((res) => {
+					dispatch(fetchSelectedUserSuccess(res.data));
+				})
+				.catch(() => message.error("Error"))
+				.finally(() => dispatch(fetchSelectedUserLoading(false)));
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [show, userSub]);
+
 	return (
 		<Modal
-			title="User Profile"
+			title="Thông tin người chơi"
 			centered
 			width={400}
 			closable
-			okText="Join"
+			footer={null}
 			onCancel={hide}
 			visible={show}
 		>

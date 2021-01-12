@@ -1,7 +1,7 @@
 import actionChatRoom from "@/actions/actionChatRoom";
 import actionJoinRoom from "@/actions/actionJoinRoom";
 import { actionChat } from "@/actions/gameActions";
-import { receiveChat, setIsJoinGame } from "@/actions/room";
+import { setIsJoinGame } from "@/actions/room";
 import { SOCKET_URL } from "@/config/URL";
 import { SOCKET_TYPES } from "@/constants/socketTypes";
 // game actions
@@ -36,16 +36,6 @@ const useProvideSocket = () => {
 			socketInstance
 				.on(SOCKET_TYPES.CONNECT, () => {
 					console.log("socket connect success");
-				})
-				// invite
-
-				// room
-
-				.on(SOCKET_TYPES.ROOM__RECEIVE_CHAT, ({ fromUser, message, time }) => {
-					dispatch(receiveChat({ fromUser, message, time }));
-				})
-				.on(SOCKET_TYPES.ROOM__JOIN_GAME_SUCCESS, (gameInfo) => {
-					push("/room", { gameInfo });
 				})
 				// game
 				.on("start-game", () => {

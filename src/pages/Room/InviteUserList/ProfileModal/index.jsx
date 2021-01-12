@@ -18,11 +18,11 @@ const ProfileModal = ({ show, hide }) => {
 
 	return (
 		<Modal
-			title="User Profile"
+			title="Thông tin người chơi"
 			centered
 			width={400}
 			closable
-			okText="Join"
+			footer={null}
 			onCancel={hide}
 			visible={show}
 		>

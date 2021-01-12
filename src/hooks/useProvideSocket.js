@@ -1,19 +1,16 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useAuth0 } from "@auth0/auth0-react";
-import { SOCKET_URL } from "@/config/URL";
-import io from "socket.io-client";
-import { SOCKET_TYPES } from "@/constants/socketTypes";
-import { Modal } from "antd";
-import { receiveChat, setIsJoinGame } from "@/actions/room";
-import { useHistory } from "react-router-dom";
-
-// game actions
-import { useEventClick } from "@/hooks/useEvent";
-import { useEventTime } from "@/hooks/useEvent";
-import {actionChat} from "@/actions/gameActions";
 import actionChatRoom from "@/actions/actionChatRoom";
 import actionJoinRoom from "@/actions/actionJoinRoom";
+import { actionChat } from "@/actions/gameActions";
+import { receiveChat, setIsJoinGame } from "@/actions/room";
+import { SOCKET_URL } from "@/config/URL";
+import { SOCKET_TYPES } from "@/constants/socketTypes";
+// game actions
+import { useEventClick, useEventTime } from "@/hooks/useEvent";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import io from "socket.io-client";
 
 const useProvideSocket = () => {
 	const [socketInstance, setSocket] = useState();
@@ -41,30 +38,7 @@ const useProvideSocket = () => {
 					console.log("socket connect success");
 				})
 				// invite
-				.on("receive-invite-request", (roomInfo) => {
-					Modal.confirm({
-						title: roomInfo.host.nickname + " moiwf",
-						onOk: () => {
-							socketInstance.emit("reply-invite-request", {
-								isAccept: true,
-								roomInfo,
-							});
-						},
-						onCancel: () => {
-							socketInstance.emit("reply-invite-request", {
-								isAccept: false,
-								roomInfo,
-							});
-						},
-					});
-				})
-				.on("accept-invite-request", (user) => {
-					console.log("accept", user);
-				})
-				.on("decline-invite-request", (user) => {
-					console.log("declinet", user);
-					Modal.error(`${user.nickname} tu choi`);
-				})
+
 				// room
 
 				.on(SOCKET_TYPES.ROOM__RECEIVE_CHAT, ({ fromUser, message, time }) => {

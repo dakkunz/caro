@@ -1,15 +1,15 @@
 // libs
-import OnlineUserSocket from "@/components/OnlineUserList/OnlineUserSocket";
 import useSocket from "@/hooks/useSocket";
+import InviteUserSocket from "@/pages/Room/InviteUserList/InviteUserSocket";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { Card, List } from "antd";
 import React from "react";
 // others
 import { useSelector } from "react-redux";
-import OnlineUserListItem from "./OnlineUserListItem";
+import InviteUserListItem from "./InviteUserListItem";
 import "./style.scss";
 
-const OnlineUserList = ({
+const InviteUserList = ({
 	withInvite = false,
 	title = "Đang Online",
 	filter,
@@ -17,21 +17,23 @@ const OnlineUserList = ({
 	const { list } = useSelector((state) => state.onlineUsers);
 	const socket = useSocket();
 
+	const displayList = filter ? list.filter(filter) : list;
+
 	return (
 		<Card
 			className="online-user-list-wrapper"
 			title={
 				<h3 style={{ margin: 0, textAlign: "center" }}>
-					{title} ({list.length})
+					{title} ({displayList.length})
 				</h3>
 			}
 			size="small"
 		>
 			<List
-				dataSource={filter ? list.filter(filter) : list}
+				dataSource={displayList}
 				size="small"
 				renderItem={(user) => (
-					<OnlineUserListItem
+					<InviteUserListItem
 						user={user}
 						key={user.sub}
 						withInvite={withInvite}
@@ -39,8 +41,8 @@ const OnlineUserList = ({
 				)}
 				rowKey={(user) => user.sub}
 			/>
-			{socket && <OnlineUserSocket />}
+			{socket && <InviteUserSocket />}
 		</Card>
 	);
 };
-export default withAuthenticationRequired(OnlineUserList);
+export default withAuthenticationRequired(InviteUserList);

@@ -1,8 +1,6 @@
 import Game from "@/components/Game";
-import useRouter from "@/hooks/useRouter";
-import OnlineUserList from "@/components/OnlineUserList";
 import ActionArea from "@/pages/Room/ActionArea";
-import ChatArea from "@/pages/Room/ChatArea";
+import InviteUserList from "@/pages/Room/InviteUserList";
 import PlayerArea from "@/pages/Room/PlayersArea";
 import withRoomInfoRequired from "@/pages/Room/withRoomInfoRequired";
 import React from "react";
@@ -10,10 +8,7 @@ import { useSelector } from "react-redux";
 import "./style.scss";
 
 const Room = () => {
-	const router = useRouter();
-	const { roomInfo } = router.location.state || {};
-
-	const { isJoinGame } = useSelector((state) => state.room);
+	const { isJoinGame, roomInfo } = useSelector((state) => state.room);
 
 	return withRoomInfoRequired(roomInfo)(
 		<>
@@ -21,12 +16,16 @@ const Room = () => {
 				<Game />
 			) : (
 				<div className="room-wrapper">
-					<div className="left">
-						<PlayerArea />
-						<ChatArea />
-					</div>
+					<PlayerArea />
 					<div className="right">
-						<OnlineUserList />
+						<InviteUserList
+							withInvite
+							title="Mời người chơi"
+							filter={(user) =>
+								user.sub !== (roomInfo.players.X || {}).sub &&
+								user.sub !== (roomInfo.players.O || {}).sub
+							}
+						/>
 						<ActionArea />
 					</div>
 				</div>

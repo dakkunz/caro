@@ -1,13 +1,28 @@
 .room-wrapper .player-place-wrapper {
 	.card-body {
 		display: flex;
+		flex-direction: column;
+		justify-content: center;
 		align-items: center;
-		.player-ava {
-			margin-right: 20px;
-			height: 100%;
+		background-color: #ffffff;
+		.name {
+			margin-top: 10px;
+			font-size: 20px;
+			font-weight: bold;
 		}
-		.player-desc {
+		.trophy {
+			margin-top: 10px;
 			font-size: 30px;
+		}
+		.rate {
+			margin-top: 10px;
+		}
+		.count {
+			.ant-tag {
+				transform: scale(1.5);
+				margin: 0 20px;
+			}
+			margin-top: 15px;
 		}
 	}
 	border: solid #40a9ff 1px;

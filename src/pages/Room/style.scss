@@ -2,11 +2,6 @@
 	display: grid;
 	grid-template-columns: auto 400px;
 	column-gap: 20px;
-	.left {
-		display: grid;
-		grid-template-rows: auto 250px;
-		row-gap: 20px;
-	}
 	.right {
 		display: grid;
 		grid-template-rows: 350px auto;

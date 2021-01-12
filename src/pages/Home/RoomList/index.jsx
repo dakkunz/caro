@@ -3,6 +3,7 @@ import { SOCKET_TYPES } from "@/constants/socketTypes";
 import useSocket from "@/hooks/useSocket";
 import PasswordModal from "@/pages/Home/PasswordModal";
 import { columns } from "@/pages/Home/RoomList/tableCols";
+import RoomListSocket from "@/pages/Home/RoomListSocket";
 import { Table, Input } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -59,6 +60,7 @@ const RoomList = () => {
 				})}
 			/>
 			<PasswordModal show={show} hide={() => setShow(false)} />
+			{socket && <RoomListSocket />}
 		</div>
 	);
 };

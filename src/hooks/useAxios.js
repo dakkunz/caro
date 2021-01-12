@@ -24,7 +24,6 @@ const useAxios = () => {
 			}),
 			(error) => Promise.reject(error)
 		);
-		console.log("res");
 	}, [getAccessTokenSilently, user]);
 
 	return AXIOS_INSTANCE;

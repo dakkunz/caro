@@ -30,6 +30,7 @@ const Main = () => {
 					component={EmailVerify}
 				/>
 				<SocketProvider>
+					<FetchUserInfo />
 					{privateRoutes.map(({ component, ...route }) => (
 						<Route
 							{...route}
@@ -38,7 +39,6 @@ const Main = () => {
 							)}
 						/>
 					))}
-					<FetchUserInfo />
 				</SocketProvider>
 			</Switch>
 		</AppLayout>

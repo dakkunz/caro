@@ -37,6 +37,9 @@ export default function handleGame(state = Config.initialState, action) {
           stepNumber: 0,
           winCells: null,
           isSaveGame: false,
+          isSurrender: false,
+          isDraw: false,
+          winner: null,
         },
       };
 
@@ -55,6 +58,33 @@ export default function handleGame(state = Config.initialState, action) {
         data: {
           ...state.data,
           isSaveGame: true,
+        },
+      };
+
+    case GAME_ACTIONS.SET_SURRENDER:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          isSurrender: action.isSurrender,
+        },
+      };
+
+    case GAME_ACTIONS.SET_DRAW:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          isDraw: action.isDraw,
+        },
+      };
+
+    case GAME_ACTIONS.SET_WINNER:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          winner: action.winner,
         },
       };
 

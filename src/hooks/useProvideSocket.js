@@ -13,7 +13,7 @@ import { useHistory } from "react-router-dom";
 // game actions
 import { useEventClick } from "@/hooks/useEvent";
 import { useEventTime } from "@/hooks/useEvent";
-import actionChat from "@/actions/actionChat";
+import {actionChat} from "@/actions/gameActions";
 import actionChatRoom from "@/actions/actionChatRoom";
 import actionJoinRoom from "@/actions/actionJoinRoom";
 

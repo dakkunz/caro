@@ -7,28 +7,29 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 const RoomActionSocket = () => {
-	const socket = useSocket();
-	const dispatch = useDispatch();
-	const { replace } = useHistory();
+  const socket = useSocket();
+  const dispatch = useDispatch();
+  const { replace } = useHistory();
 
-	useEffect(() => {
-		const handleJoinRoomSuccess = (roomInfo) => {
-			dispatch(joinRoomSuccess(roomInfo));
-			replace("/room", { roomInfo });
-		};
-		if (socket) {
-			socket
-				.on(SOCKET_TYPES.JOIN_ROOM_SUCCESS, handleJoinRoomSuccess)
-				.on("join-room-quick-success", handleJoinRoomSuccess);
-		}
-		return () => {
-			socket
-				.off(SOCKET_TYPES.JOIN_ROOM_SUCCESS, handleJoinRoomSuccess)
-				.off("join-room-quick-success", handleJoinRoomSuccess);
-		};
-	}, [dispatch, replace, socket]);
+  useEffect(() => {
+    const handleJoinRoomSuccess = (roomInfo) => {
+      console.log("join-room-quick-success");
+      console.log(roomInfo);
+      dispatch(joinRoomSuccess(roomInfo));
+      replace("/room", { roomInfo });
+    };
+    if (socket) {
+      socket
+        .off(SOCKET_TYPES.JOIN_ROOM_SUCCESS)
+        .off("join-room-quick-success")
+        .on(SOCKET_TYPES.JOIN_ROOM_SUCCESS, handleJoinRoomSuccess)
+        .on("join-room-quick-success", handleJoinRoomSuccess);
+    }
+    return () => {
+    };
+  }, [dispatch, replace, socket]);
 
-	return <></>;
+  return <></>;
 };
 
 export default RoomActionSocket;

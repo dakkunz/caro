@@ -79,10 +79,10 @@ const useProvideSocket = () => {
 					dispatch(setIsJoinGame(true));
 					useEventTime.emit("set-time");
 				})
-				.on(SOCKET_TYPES.JOIN_ROOM_QUICK_SUCCESS, (roomInfo) => {
-					console.log(roomInfo);
-					dispatch(actionJoinRoom(roomInfo));
-				})
+				// .on(SOCKET_TYPES.JOIN_ROOM_QUICK_SUCCESS, (roomInfo) => {
+				// 	console.log(roomInfo);
+				// 	dispatch(actionJoinRoom(roomInfo));
+				// })
 				.on(SOCKET_TYPES.CHAT, (data) => {
 					dispatch(actionChat(data));
 					dispatch(actionChatRoom(data));

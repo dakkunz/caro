@@ -4,7 +4,7 @@ import useSocket from "@/hooks/useSocket";
 import PasswordModal from "@/pages/Home/PasswordModal";
 import { columns } from "@/pages/Home/RoomList/tableCols";
 import RoomListSocket from "@/pages/Home/RoomListSocket";
-import { Table, Input } from "antd";
+import { Table, Input, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
@@ -40,6 +40,7 @@ const RoomList = () => {
 							list.filter((room) => checkMatchSearch(room, value))
 						)
 					}
+					name="search"
 					className="search-input"
 				/>
 			</div>
@@ -52,6 +53,10 @@ const RoomList = () => {
 				rowKey={(room) => room.id}
 				onRow={(room) => ({
 					onClick: () => {
+						if (room.players.X && room.players.O) {
+							message.error("Phòng đã đủ người");
+							return;
+						}
 						dispatch(selectRoom(room));
 						if (room.password) {
 							setShow(true);

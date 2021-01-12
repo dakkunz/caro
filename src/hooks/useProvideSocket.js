@@ -5,7 +5,7 @@ import { SOCKET_URL } from "@/config/URL";
 import io from "socket.io-client";
 import { SOCKET_TYPES } from "@/constants/socketTypes";
 import { Modal } from "antd";
-import { joinRoomSuccess, receiveChat, setIsJoinGame } from "@/actions/room";
+import { receiveChat, setIsJoinGame } from "@/actions/room";
 import { useHistory } from "react-router-dom";
 
 // game actions
@@ -66,10 +66,7 @@ const useProvideSocket = () => {
 					Modal.error(`${user.nickname} tu choi`);
 				})
 				// room
-				.on("room-detail-update", (room) => {
-					console.log(room);
-					dispatch(joinRoomSuccess(room));
-				})
+
 				.on(SOCKET_TYPES.ROOM__RECEIVE_CHAT, ({ fromUser, message, time }) => {
 					dispatch(receiveChat({ fromUser, message, time }));
 				})

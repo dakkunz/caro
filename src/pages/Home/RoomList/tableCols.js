@@ -4,15 +4,11 @@ import RoomStatus from "@/pages/Home/RoomStatus";
 const roomStatusMapping = {
 	0: {
 		label: "Playing",
-		color: "green",
+		color: "magenta",
 	},
 	1: {
-		label: "Waiting Player",
-		color: "blue",
-	},
-	2: {
-		label: "Pending Start",
-		color: "magenta",
+		label: "Pending",
+		color: "green",
 	},
 };
 
@@ -32,13 +28,13 @@ export const columns = [
 			<RoomName roomName={roomName} hasPassword={password ? true : false} />
 		),
 	},
-	// {
-	// 	title: "Host",
-	// 	dataIndex: "host",
-	// 	key: "host",
-	// 	width: "25%",
-	// 	render: ({ nickname }) => <span>{nickname}</span>,
-	// },
+	{
+		title: "Host",
+		dataIndex: "host",
+		key: "host",
+		width: "25%",
+		render: ({ displayName }) => <span>{displayName}</span>,
+	},
 	{
 		title: "Players",
 		dataIndex: "players",

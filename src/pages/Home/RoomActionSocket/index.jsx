@@ -9,12 +9,12 @@ import { useHistory } from "react-router-dom";
 const RoomActionSocket = () => {
 	const socket = useSocket();
 	const dispatch = useDispatch();
-	const { push } = useHistory();
+	const { replace } = useHistory();
 
 	useEffect(() => {
 		const handleJoinRoomSuccess = (roomInfo) => {
 			dispatch(joinRoomSuccess(roomInfo));
-			push("/room", { roomInfo });
+			replace("/room", { roomInfo });
 		};
 		if (socket) {
 			socket
@@ -26,7 +26,7 @@ const RoomActionSocket = () => {
 				.off(SOCKET_TYPES.JOIN_ROOM_SUCCESS, handleJoinRoomSuccess)
 				.off("join-room-quick-success", handleJoinRoomSuccess);
 		};
-	}, [dispatch, push, socket]);
+	}, [dispatch, replace, socket]);
 
 	return <></>;
 };

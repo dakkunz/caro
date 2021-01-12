@@ -27,8 +27,7 @@ const RoomModal = ({ show, hide }) => {
 				initialValues={{ roomName: user.nickname + " Room", time: 30 }}
 				form={form}
 				onFinish={({ roomName, password, time }) => {
-					console.log({ roomName, password, time: time * 1000 });
-					socket.emit(SOCKET_TYPES.CREATE_ROOM_REQUEST, roomName, password);
+					socket.emit(SOCKET_TYPES.CREATE_ROOM_REQUEST, roomName, password, time);
 				}}
 				layout="vertical"
 			>

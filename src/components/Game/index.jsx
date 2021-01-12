@@ -1,24 +1,23 @@
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import React, { useState, useEffect } from "react";
-import { Button, Card, FormControl } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import Dialog from "react-bootstrap-dialog";
-import { Statistic } from "antd";
 import Board from "./components/Board";
 import Status from "./components/Status";
+import Chat from "./components/Chat";
+import Timer from "./components/Timer";
 import Config from "@/constants/configs";
 import useSocket from "@/hooks/useSocket";
-import useEvent from "@/hooks/useEvent";
+import {useEventClick} from "@/hooks/useEvent";
 //actions
 import actionClick from "@/actions/actionClick";
 import actionJoinRoom from "@/actions/actionJoinRoom";
-import actionChat from "@/actions/actionChat";
-import actionChatRoom from "@/actions/actionChatRoom";
 import actionRefresh from "@/actions/actionRefresh";
 import actionRefreshGame from "@/actions/actionRefreshGame";
 import actionSaveGame from "@/actions/actionSaveGame";
 import actionRequest from "@/actions/actionRequest";
-import {setTime} from "@/actions/room";
+import { setTime } from "@/actions/room";
 
 import "./styles.scss";
 import { useHistory } from "react-router-dom";
@@ -36,13 +35,9 @@ const Game = (props) => {
   const { message } = props;
   const { isSaveGame } = props;
   const { isFetching } = props;
-  const { countDownTimer } = props;
   const { chatHistory } = props;
-  const { chatHistoryAll } = props;
 
   const socket = useSocket();
-
-  const { Countdown } = Statistic;
 
   const [isEndGame, setIsEndGame] = useState(false);
   const [isOverTime, setIsOverTime] = useState(false);
@@ -51,12 +46,11 @@ const Game = (props) => {
   const [winner, setWinner] = useState(null);
   const [dialog, setDialog] = useState("");
 
-  useEvent.removeAllListeners();
+  useEventClick.removeAllListeners();
 
-  useEvent.on("add-new-move", (data) => {
-	console.log("Event add move");
-	handleClick(data.row, data.col);
-    useEvent.removeAllListeners();
+  useEventClick.on("add-new-move", (data) => {
+    handleClick(data.row, data.col);
+    useEventClick.removeAllListeners();
   });
 
   const setupSocket = () => {
@@ -211,21 +205,8 @@ const Game = (props) => {
     ? (roomInfo.players.O || {}).picture
     : (roomInfo.players.X || {}).picture;
 
-  const [chatMessage, setChatMessage] = useState("");
-  const listChat = [];
-  for (let i = 0; i < chatHistoryAll.length; i++) {
-    const color = chatHistoryAll[i].sender === user.sub ? "blue" : "red";
-    const style = { color: color };
-    listChat.push(
-      <b style={style} key={i}>
-        {chatHistoryAll[i].sender === user.sub ? user.name : rivalName}
-      </b>
-    );
-    listChat.push(": " + chatHistoryAll[i].message);
-    listChat.push(<br key={i + chatHistoryAll.length}></br>);
-  }
-
   useEffect(() => {
+    console.log("vao use effect 2");
     let calculateWinner = null;
 
     const isOnePlayerDisconnected =
@@ -291,7 +272,6 @@ const Game = (props) => {
     winCells,
     nextMove,
     history,
-    chatHistory,
     isPlayerX,
     isSaveGame,
     actions,
@@ -300,6 +280,7 @@ const Game = (props) => {
     isDraw,
     isSurrender,
     winner,
+    chatHistory,
   ]);
 
   const { push } = useHistory();
@@ -477,7 +458,7 @@ const Game = (props) => {
   };
 
   const handleClick = (row, col) => {
-	console.log("handle click" + row + " "+ col);
+    console.log("handle click" + row + " " + col);
     const { actions } = props;
     const { stepNumber } = props;
     const { history } = props;
@@ -503,22 +484,12 @@ const Game = (props) => {
         },
       ]);
 
-	  actions.actionClick(_history, _nextMove, _winCells);
-	  actions.setTime(countDownTimer);
+      actions.actionClick(_history, _nextMove, _winCells);
+      // setCountDownTimer(roomInfo.time);
 
       return true;
     }
     return false;
-  };
-
-  const handleChat = (e) => {
-    e.preventDefault();
-    socket.emit("chat", chatMessage);
-    setChatMessage("");
-  };
-
-  const handleOverTime = (e) => {
-    setIsOverTime(true);
   };
 
   return (
@@ -608,28 +579,10 @@ const Game = (props) => {
           />
         </div>
         <div>
-          {!isEndGame && (
-            <Countdown
-              value={Date.now() + countDownTimer*1000}
-              format="ss"
-              onFinish={handleOverTime}
-            />
+        {!isEndGame && (
+            <Timer roomTime={roomInfo.time} setIsOverTime={setIsOverTime}/>
           )}
-          <Card className="card-chat">
-            <Card.Body className="card-body">
-              <Card.Title className="card-title">Chat</Card.Title>
-              <div className="scroll-view-chat">{listChat}</div>
-              <form onSubmit={(e) => handleChat(e)}>
-                <FormControl
-                  type="chatMessage"
-                  className="input-message"
-                  placeholder="Nội dung"
-                  value={chatMessage}
-                  onChange={(e) => setChatMessage(e.target.value)}
-                ></FormControl>
-              </form>
-            </Card.Body>
-          </Card>
+          <Chat socket={socket} rivalName={rivalName}/>
         </div>
       </div>
     </div>
@@ -644,11 +597,9 @@ const mapStateToProps = (state) => {
     winCells: state.game.data.winCells,
     message: state.game.message,
     roomInfo: state.room.roomInfo,
-    chatHistory: state.game.data.chatHistory,
     isSaveGame: state.game.data.isSaveGame,
     isFetching: state.game.isFetching,
-    countDownTimer: state.room.roomInfo.time || 0,
-    chatHistoryAll: state.roomReducers.chatHistoryAll,
+    chatHistory: state.game.data.chatHistory,
   };
 };
 
@@ -658,13 +609,11 @@ const mapDispatchToProps = (dispatch) => {
       {
         actionClick,
         actionJoinRoom,
-        actionChat,
-        actionChatRoom,
         actionRefresh,
         actionRefreshGame,
         actionSaveGame,
-		actionRequest,
-		setTime,
+        actionRequest,
+        setTime,
       },
       dispatch
     ),

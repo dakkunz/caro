@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
 
-const useEvent = new EventEmitter();
+export const useEventClick = new EventEmitter();
 
-export default useEvent;
+export const useEventTime = new EventEmitter();

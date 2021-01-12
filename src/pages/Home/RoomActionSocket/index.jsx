@@ -13,8 +13,7 @@ const RoomActionSocket = () => {
 
 	useEffect(() => {
 		const handleJoinRoomSuccess = (roomInfo) => {
-			console.log("join-room-quick-success");
-			console.log(roomInfo);
+			console.log("join-room-quick-success", roomInfo);
 			dispatch(joinRoomSuccess(roomInfo));
 			replace("/room", { roomInfo });
 		};

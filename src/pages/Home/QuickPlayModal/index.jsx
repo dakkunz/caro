@@ -20,7 +20,7 @@ const QuickPlayModal = ({ show, hide }) => {
 			title="Finding Match..."
 			centered
 			onCancel={() => {
-				socket.emit(SOCKET_TYPES.STOP_FIND_MATCH);
+				// socket.emit(SOCKET_TYPES.STOP_FIND_MATCH);
 				hide();
 			}}
 			maskClosable={false}

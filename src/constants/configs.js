@@ -34,6 +34,9 @@ class Config extends Component {
             stepNumber: 0,
             winCells: null,
             isSaveGame: false,
+            isSurrender: false,
+            isDraw: false,
+            winner: null,
         }
     };
 }

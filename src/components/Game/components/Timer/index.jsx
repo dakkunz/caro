@@ -13,8 +13,8 @@ const Timer = (props) => {
 			setCount((count) => count - 1);
 		}, 1000);
 		useEventTime.on("set-time", () => {
-			console.log("set-time");
 			setCount(time);
+			handleResetOverTime();
 		});
 		return () => {
 			clearInterval(counter);
@@ -32,6 +32,10 @@ const Timer = (props) => {
 
 	const handleOverTime = (e) => {
 		props.setIsOverTime(true);
+	};
+
+	const handleResetOverTime = (e) => {
+		props.setIsOverTime(false);
 	};
 
 	return <div>{count}</div>;

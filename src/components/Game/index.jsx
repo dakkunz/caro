@@ -16,9 +16,9 @@ import useAxios from "@/hooks/useAxios";
 import { useEventClick, useEventTime } from "@/hooks/useEvent";
 import useSocket from "@/hooks/useSocket";
 import { useAuth0 } from "@auth0/auth0-react";
+import { Modal } from "antd";
 import React, { useEffect, useState } from "react";
 import { Button, Card } from "react-bootstrap";
-import Dialog from "react-bootstrap-dialog";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { bindActionCreators } from "redux";
@@ -50,7 +50,6 @@ const Game = (props) => {
 
 	const [isEndGame, setIsEndGame] = useState(false);
 	const [isOverTime, setIsOverTime] = useState(false);
-	const [dialog, setDialog] = useState("");
 
 	useEventClick.removeAllListeners();
 
@@ -69,9 +68,9 @@ const Game = (props) => {
 
 		// Play again
 		socket.on("refresh-game-request", (data) => {
-			doConfirm(
-				"Đối thủ muốn chơi lại !",
-				() => {
+			Modal.confirm({
+				title: "Đối thủ muốn chơi lại !",
+				onOk: () => {
 					socket.emit("refresh-game-result", {
 						message: "yes",
 						nextMove: data,
@@ -79,21 +78,21 @@ const Game = (props) => {
 					actions.actionRefreshGame(data);
 					useEventTime.emit("set-time");
 				},
-				() => {
+				onCancel: () => {
 					socket.emit("refresh-game-result", {
 						message: "no",
 					});
-				}
-			);
+				},
+			});
 		});
 
 		socket.on("refresh-game-result", (data) => {
 			if (data.message === "yes") {
 				actions.actionRefreshGame(data.nextMove);
 				useEventTime.emit("set-time");
-				dialog.showAlert(`Đối thủ đã đồng ý!`);
+				Modal.success({ title: "Đối thủ đã đồng ý!" });
 			} else {
-				dialog.showAlert(`Đối thủ không đồng ý!`);
+				Modal.warning({ title: "Đối thủ không đồng ý!" });
 			}
 		});
 
@@ -115,9 +114,9 @@ const Game = (props) => {
 
 		//Draw
 		socket.on("draw-request", () => {
-			doConfirm(
-				"Đối thủ xin hoà trận đấu !",
-				() => {
+			Modal.confirm({
+				title: "Đối thủ xin hoà trận đấu !",
+				onOk: () => {
 					socket.emit("draw-result", {
 						message: "yes",
 					});
@@ -126,39 +125,35 @@ const Game = (props) => {
 					actions.actionSetWinner(winner);
 					actions.actionSetDraw(true);
 				},
-				() => {
+				onCancel: () => {
 					socket.emit("draw-result", {
 						message: "no",
 					});
 					actions.actionRequest(false, null);
-				}
-			);
+				},
+			});
 		});
 
 		socket.on("draw-result", (data) => {
 			if (data.message === "yes") {
 				actions.actionRequest(true, `Đối thủ đã chấp nhận hoà !`);
-				dialog.showAlert(`Đối thủ đã chấp nhận hoà!`);
+				Modal.success({ title: "Đối thủ đã chấp nhận hoà!" });
 				const winner = isPlayerX ? Config.xPlayer : Config.oPlayer;
 				actions.actionSetWinner(winner);
 				actions.actionSetDraw(true);
 			} else {
 				actions.actionRequest(false, null);
-				dialog.showAlert(`Đối thủ đã từ chối hoà!`);
+				Modal.warning({ title: "Đối thủ đã từ chối hoà!" });
 			}
 		});
 	};
 
 	const doConfirm = (message, callbackYes, callbackNo) => {
-		dialog.show({
+		Modal.confirm({
 			title: "Xác nhận",
-			body: message,
-			actions: [
-				Dialog.CancelAction(() => callbackNo()),
-				Dialog.OKAction(() => callbackYes()),
-			],
-			bsSize: "sm",
-			onHide: (dialog) => {},
+			content: message,
+			onOk: callbackYes,
+			onCancel: callbackNo,
 		});
 	};
 
@@ -516,7 +511,6 @@ const Game = (props) => {
 				isOverTime={isOverTime}
 				winner={winner}
 			/>
-			<Dialog ref={(el) => setDialog(el)} />
 			<div className="board-game">
 				<div>
 					<Card className="card">

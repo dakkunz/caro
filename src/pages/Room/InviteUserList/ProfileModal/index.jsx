@@ -1,5 +1,5 @@
 import { LoadingOutlined, TrophyOutlined } from "@ant-design/icons";
-import { Modal, Progress, Spin, Tag } from "antd";
+import { Modal, Spin, Tag } from "antd";
 import Avatar from "antd/lib/avatar/avatar";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -34,7 +34,7 @@ const ProfileModal = ({ show, hide }) => {
 						<TrophyOutlined /> <span>{point}</span>
 					</div>
 					<div className="rate">
-						<Progress
+						{/* <Progress
 							type="circle"
 							status="active"
 							percent={((win + draw) / total) * 100}
@@ -47,7 +47,7 @@ const ProfileModal = ({ show, hide }) => {
 							)}
 							trailColor="#ff4d4f"
 							width={100}
-						/>
+						/> */}
 					</div>
 					<div className="count">
 						<Tag color="cyan">{total} trận</Tag>

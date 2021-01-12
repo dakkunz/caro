@@ -13,6 +13,8 @@ const RoomActionSocket = () => {
 
 	useEffect(() => {
 		const handleJoinRoomSuccess = (roomInfo) => {
+			console.log("join-room-quick-success");
+			console.log(roomInfo);
 			dispatch(joinRoomSuccess(roomInfo));
 			replace("/room", { roomInfo });
 		};
@@ -21,16 +23,14 @@ const RoomActionSocket = () => {
 		};
 		if (socket) {
 			socket
+				.off(SOCKET_TYPES.JOIN_ROOM_SUCCESS)
+				.off("join-room-quick-success")
+				.off("join-room-fail", handleJoinRoomFail)
 				.on(SOCKET_TYPES.JOIN_ROOM_SUCCESS, handleJoinRoomSuccess)
 				.on("join-room-quick-success", handleJoinRoomSuccess)
 				.on("join-room-fail", handleJoinRoomFail);
 		}
-		return () => {
-			socket
-				.off(SOCKET_TYPES.JOIN_ROOM_SUCCESS, handleJoinRoomSuccess)
-				.off("join-room-quick-success", handleJoinRoomSuccess)
-				.off("join-room-fail", handleJoinRoomFail);
-		};
+		return () => {};
 	}, [dispatch, replace, socket]);
 
 	return <></>;

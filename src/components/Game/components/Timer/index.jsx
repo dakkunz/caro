@@ -12,13 +12,13 @@ const Timer = (props) => {
 		const counter = setInterval(() => {
 			setCount((count) => count - 1);
 		}, 1000);
+		useEventTime.removeAllListeners();
 		useEventTime.on("set-time", () => {
 			setCount(time);
 			handleResetOverTime();
 		});
 		return () => {
 			clearInterval(counter);
-			useEventTime.removeAllListeners();
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

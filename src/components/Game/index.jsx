@@ -189,6 +189,8 @@ const Game = (props) => {
   const requestRefreshGame = () => {
     const nextMove =
       winner === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
+    console.log("winner: " + winner);
+    console.log("Next move: " + nextMove);
     doConfirm(
       "Bạn muốn chơi lại ?",
       () => {
@@ -212,7 +214,7 @@ const Game = (props) => {
 
     const isOnePlayerDisconnected =
       roomInfo.players.O.name === "DISCONNECTED" ||
-      roomInfo.players.X === "DISCONNECTED";
+      roomInfo.players.X.name === "DISCONNECTED";
 
     const isEndGame =
       isOnePlayerDisconnected ||
@@ -263,9 +265,11 @@ const Game = (props) => {
       if (winCells || isOverTime) {
         calculateWinner =
           nextMove === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
+        actions.actionSetWinner(calculateWinner);
       } else if (isOnePlayerDisconnected) {
         calculateWinner =
-          roomInfo.players.X === null ? Config.oPlayer : Config.xPlayer;
+          roomInfo.players.X.name === "DISCONNECTED" ? Config.oPlayer : Config.xPlayer;
+        actions.actionSetWinner(calculateWinner);
       } else if (isSurrender) {
         calculateWinner = winner;
       } else if (isDraw && winner) {

@@ -3,11 +3,11 @@ import RoomStatus from "@/pages/Home/RoomStatus";
 
 const roomStatusMapping = {
 	0: {
-		label: "Playing",
+		label: "Đang chơi",
 		color: "magenta",
 	},
 	1: {
-		label: "Pending",
+		label: "Đang chờ",
 		color: "green",
 	},
 };
@@ -18,10 +18,10 @@ export const columns = [
 		dataIndex: "id",
 		key: "id",
 
-		width: "10%",
+		width: "12%",
 	},
 	{
-		title: "Room Name",
+		title: "Tên phòng",
 		dataIndex: "roomName",
 		key: "roomName",
 		render: (roomName, { password }) => (
@@ -29,14 +29,14 @@ export const columns = [
 		),
 	},
 	{
-		title: "Host",
+		title: "Chủ phòng",
 		dataIndex: "host",
 		key: "host",
 		width: "25%",
 		render: ({ displayName }) => <span>{displayName}</span>,
 	},
 	{
-		title: "Players",
+		title: "Người",
 		dataIndex: "players",
 		key: "player",
 		width: "8%",
@@ -48,7 +48,7 @@ export const columns = [
 		},
 	},
 	{
-		title: "Status",
+		title: "Trạng thái",
 		dataIndex: "status",
 		key: "status",
 		width: "15%",

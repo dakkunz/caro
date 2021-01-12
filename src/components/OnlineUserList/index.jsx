@@ -1,13 +1,13 @@
 // libs
-import OnlineUserListItem from "./OnlineUserListItem";
+import OnlineUserSocket from "@/components/OnlineUserList/OnlineUserSocket";
+import useSocket from "@/hooks/useSocket";
+import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { Card, List } from "antd";
 import React from "react";
 // others
 import { useSelector } from "react-redux";
-import { withAuthenticationRequired } from "@auth0/auth0-react";
+import OnlineUserListItem from "./OnlineUserListItem";
 import "./style.scss";
-import OnlineUserSocket from "@/components/OnlineUserList/OnlineUserSocket";
-import useSocket from "@/hooks/useSocket";
 
 const OnlineUserList = ({ withInvite = false }) => {
 	const { list } = useSelector((state) => state.onlineUsers);

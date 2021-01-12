@@ -3,12 +3,12 @@ import React from "react";
 
 const roomStatusMapping = {
 	0: {
-		label: "Playing",
-		color: "green",
+		label: "Đang chơi",
+		color: "magenta",
 	},
 	1: {
-		label: "Pending",
-		color: "magenta",
+		label: "Đang chờ",
+		color: "green",
 	},
 };
 

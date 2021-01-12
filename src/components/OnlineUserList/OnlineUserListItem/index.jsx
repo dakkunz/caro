@@ -1,14 +1,25 @@
 // libs
+import {
+	fetchSelectedUserLoading,
+	fetchSelectedUserSuccess,
+} from "@/actions/onlineUsers";
+import ProfileModal from "@/components/OnlineUserList/ProfileModal";
+import useAxios from "@/hooks/useAxios";
 import useSocket from "@/hooks/useSocket";
 import { SmileOutlined, TrophyOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Button, List } from "antd";
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 // components
 // others
 import "./styles.scss";
 
-const OnlineUserListItem = ({ user }) => {
+const OnlineUserListItem = ({ user, withInvite }) => {
 	const socket = useSocket();
+	const dispatch = useDispatch();
+	const axios = useAxios();
+	const [show, setShow] = useState(false);
+
 	return (
 		<List.Item className="online-user-list-item-wrapper">
 			<List.Item.Meta
@@ -23,19 +34,35 @@ const OnlineUserListItem = ({ user }) => {
 						<div className="user-trophy">
 							<TrophyOutlined /> <span>{(user.trophy || {}).point}</span>
 						</div>
-						<Button type="link" icon={<UserOutlined />}>
-							Profile
-						</Button>
 						<Button
 							type="link"
-							icon={<SmileOutlined />}
-							onClick={() => socket.emit("invite-room", user.socketId)}
+							icon={<UserOutlined />}
+							onClick={() => {
+								setShow(true);
+								dispatch(fetchSelectedUserLoading(true));
+								axios
+									.post("/users/info/search", { sub: user.sub })
+									.then((res) => {
+										dispatch(fetchSelectedUserSuccess(res.data));
+									})
+									.finally(() => dispatch(fetchSelectedUserLoading(false)));
+							}}
 						>
-							Invite
+							Profile
 						</Button>
+						{withInvite && (
+							<Button
+								type="link"
+								icon={<SmileOutlined />}
+								onClick={() => socket.emit("invite-room", user.socketId)}
+							>
+								Invite
+							</Button>
+						)}
 					</div>
 				}
 			/>
+			<ProfileModal show={show} hide={() => setShow(false)} />
 		</List.Item>
 	);
 };

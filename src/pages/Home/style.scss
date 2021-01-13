@@ -2,5 +2,14 @@
 	display: grid;
 	grid-template-columns: auto 350px;
 	column-gap: 20px;
-	grid-template-rows: 1fr 1fr;
+	.left {
+		display: grid;
+		grid-template-rows: 3fr 2fr;
+		row-gap: 20px;
+	}
+	.right {
+		display: grid;
+		grid-template-rows: min-content auto;
+		row-gap: 20px;
+	}
 }

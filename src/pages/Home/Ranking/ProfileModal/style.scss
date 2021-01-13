@@ -1,0 +1,28 @@
+.profile-modal-wrapper {
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	.name {
+		margin-top: 10px;
+		font-size: 20px;
+	}
+	.trophy {
+		margin-top: 10px;
+		font-size: 30px;
+	}
+	.rate {
+		margin-top: 10px;
+	}
+	.count {
+		.ant-tag {
+			margin: 0 5px;
+			width: 90px;
+			text-align: center;
+			font-size: 14px;
+		}
+		margin-top: 15px;
+	}
+}

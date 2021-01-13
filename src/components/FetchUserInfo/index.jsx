@@ -5,13 +5,14 @@ import useAxios from "@/hooks/useAxios";
 import useSocket from "@/hooks/useSocket";
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const FetchUserInfo = () => {
 	const axios = useAxios();
 	const dispatch = useDispatch();
 	const { isAuthenticated } = useAuth0();
 	const socket = useSocket();
+	const { shouldRefresh } = useSelector((state) => state.profile);
 
 	const { user } = useAuth();
 	useEffect(() => {
@@ -20,7 +21,7 @@ const FetchUserInfo = () => {
 				dispatch(getUserInfo(res.data));
 			});
 		}
-	}, [axios, dispatch, isAuthenticated]);
+	}, [axios, dispatch, isAuthenticated, shouldRefresh]);
 
 	useEffect(() => {
 		if (user && user.displayName && socket)

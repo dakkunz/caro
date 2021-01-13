@@ -1,5 +1,3 @@
-//actions
-import actionRefresh from "@/actions/actionRefresh";
 import {
 	actionClick,
 	actionRefreshGame,
@@ -40,7 +38,7 @@ const Game = (props) => {
 	const { roomInfo } = props;
 	const { message } = props;
 	const { isSaveGame } = props;
-	const { isFetching } = props;
+	// const { isFetching } = props;
 	const { chatHistory } = props;
 	const { isSurrender } = props;
 	const { isDraw } = props;
@@ -294,7 +292,7 @@ const Game = (props) => {
 
 	const { push } = useHistory();
 	const exitGame = () => {
-		actions.actionRefresh();
+		actions.actionRefreshGame("X");
 		push("/");
 		socket.emit("out-game");
 	};
@@ -611,7 +609,7 @@ const mapStateToProps = (state) => {
 		isSurrender: state.game.data.isSurrender,
 		isDraw: state.game.data.isDraw,
 		winner: state.game.data.winner,
-		isFetching: state.game.isFetching,
+		// isFetching: state.game.isFetching,
 		chatHistory: state.game.data.chatHistory,
 	};
 };
@@ -621,7 +619,6 @@ const mapDispatchToProps = (dispatch) => {
 		actions: bindActionCreators(
 			{
 				actionClick,
-				actionRefresh,
 				actionRefreshGame,
 				actionSaveGame,
 				actionRequest,

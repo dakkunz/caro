@@ -11,7 +11,7 @@ import "./style.scss";
 const Home = () => {
 	const dispatch = useDispatch();
 	useEffect(() => {
-		dispatch(refreshUserInfo());
+		setTimeout(() =>{dispatch(refreshUserInfo());}, 1000);
 	}, [dispatch]);
 	return (
 		<div className="home-wrapper">

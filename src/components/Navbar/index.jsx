@@ -24,8 +24,8 @@ const Navbar = () => {
 				<Dropdown
 					overlay={
 						<Menu>
-							<Menu.Item onClick={() => push("/profile")}>Profile</Menu.Item>
-							<Menu.Item onClick={submitLogout}>Logout</Menu.Item>
+							<Menu.Item onClick={() => push("/profile")}>Thông tin tài khoản</Menu.Item>
+							<Menu.Item onClick={submitLogout}>Đăng xuất</Menu.Item>
 						</Menu>
 					}
 					placement="bottomCenter"

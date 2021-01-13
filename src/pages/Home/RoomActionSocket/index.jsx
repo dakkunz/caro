@@ -13,21 +13,28 @@ const RoomActionSocket = () => {
 
 	useEffect(() => {
 		const handleJoinRoomSuccess = (roomInfo) => {
-			console.log("join-room-quick-success", roomInfo);
 			dispatch(joinRoomSuccess(roomInfo));
 			replace("/room", { roomInfo });
 		};
 		const handleJoinRoomFail = (mes) => {
+			console.log(mes);
 			message.error(mes);
 		};
+		const handlePairSuccess = (room) => {
+			socket.emit("pair-success", room);
+		}
 		if (socket) {
 			socket
 				.off(SOCKET_TYPES.JOIN_ROOM_SUCCESS)
 				.off("join-room-quick-success")
-				.off("join-room-fail", handleJoinRoomFail)
+				.off("join-room-fail")
+				.off("pair-success")
+				.off("join-room-quick-fail")
 				.on(SOCKET_TYPES.JOIN_ROOM_SUCCESS, handleJoinRoomSuccess)
 				.on("join-room-quick-success", handleJoinRoomSuccess)
-				.on("join-room-fail", handleJoinRoomFail);
+				.on("join-room-fail", handleJoinRoomFail)
+				.on("pair-success", handlePairSuccess)
+				.on("join-room-quick-fail", handleJoinRoomFail)
 		}
 		return () => {};
 	}, [dispatch, replace, socket]);

@@ -96,7 +96,7 @@ const InviteUserListItem = ({ user, withInvite }) => {
 									}
 								}}
 							>
-								{inviting ? "Đang chờ" : "Mời"}
+								{inviting ? "Đang mời" : "Mời"}
 							</Button>
 						)}
 					</div>

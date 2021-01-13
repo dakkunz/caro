@@ -4,7 +4,7 @@ import React from "react";
 import "./style.scss";
 
 const PlayerPlace = ({ player, type }) => (
-	<Card type="inner" className="player-place-wrapper" title={`Player ${type}`}>
+	<Card type="inner" className="player-place-wrapper" title={`Người chơi ${type}`}>
 		{player && (
 			<div className="card-body">
 				<Avatar shape="circle" src={player.picture} size={100} />

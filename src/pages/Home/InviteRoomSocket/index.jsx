@@ -12,7 +12,7 @@ const InviteRoomSocket = () => {
 	useEffect(() => {
 		const handleReceiveInvite = (roomInfo) => {
 			Modal.confirm({
-				title: roomInfo.host.nickname + " moiwf",
+				title: roomInfo.host.nickname + " mời bạn vào phòng!",
 				onOk: () => {
 					socket.emit("reply-invite-request", {
 						isAccept: true,

@@ -31,6 +31,8 @@ import "./styles.scss";
 const Game = (props) => {
   const { user } = useAuth();
   const axios = useAxios();
+  const { push } = useHistory();
+  const socket = useSocket();
 
   const { actions } = props;
   const { history } = props;
@@ -45,8 +47,9 @@ const Game = (props) => {
   const { isSurrender } = props;
   const { isDraw } = props;
   const { winner } = props;
+  const { isJoinGame } = props;
 
-  const socket = useSocket();
+
 
   const [isEndGame, setIsEndGame] = useState(false);
   const [isOverTime, setIsOverTime] = useState(false);
@@ -236,14 +239,16 @@ const Game = (props) => {
 
         axios
           .post("/games/save", {
-			xPlayer: {
-				sub: isPlayerX ? user.sub : rival.sub,
-				displayName: isPlayerX ? user.displayName : rival.displayName,
-			},
-			oPlayer: {
-				sub: !isPlayerX ? user.sub : rival.sub,
-				displayName:!isPlayerX ? user.displayName : rival.displayName,
-			},
+            xPlayer: {
+              sub: isPlayerX ? user.sub : rival.sub,
+              displayName: isPlayerX ? user.displayName : rival.displayName,
+              picture: isPlayerX ? user.picture : rival.picture,
+            },
+            oPlayer: {
+              sub: !isPlayerX ? user.sub : rival.sub,
+              displayName: !isPlayerX ? user.displayName : rival.displayName,
+              picture: !isPlayerX ? user.picture : rival.picture,
+            },
             history,
             chatHistory,
             winCells,
@@ -252,7 +257,7 @@ const Game = (props) => {
             date: new Date(),
           })
           .then((res) => {
-            console.log(res);
+            console.log(res.data);
           });
       }
       actions.actionSaveGame();
@@ -279,6 +284,10 @@ const Game = (props) => {
       if (!isSaveGame && calculateWinner) {
         saveGame();
       }
+
+      if(isSaveGame === true && isJoinGame === false){
+        push('/');
+      }
     }
   }, [
     roomInfo,
@@ -296,14 +305,14 @@ const Game = (props) => {
     winner,
     chatHistory,
     axios,
+    isJoinGame,
+    push
   ]);
 
-  const { push } = useHistory();
   const exitGame = () => {
-	actions.actionRefreshGame("X");
-	actions.setIsJoinGame(false);
-	actions.actionRefresh();
-    push("/");
+    actions.actionRefreshGame("X");
+    actions.setIsJoinGame(false);
+    actions.actionRefresh();
     socket.emit("out-game");
   };
 
@@ -621,6 +630,7 @@ const mapStateToProps = (state) => {
     winner: state.game.data.winner,
     // isFetching: state.game.isFetching,
     chatHistory: state.game.data.chatHistory,
+    isJoinGame: state.room.isJoinGame,
   };
 };
 
@@ -635,9 +645,9 @@ const mapDispatchToProps = (dispatch) => {
         setTime,
         actionSetSurrender,
         actionSetDraw,
-		actionSetWinner,
-		setIsJoinGame,
-		actionRefresh,
+        actionSetWinner,
+        setIsJoinGame,
+        actionRefresh,
       },
       dispatch
     ),

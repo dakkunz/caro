@@ -13,6 +13,9 @@ const initialState = {
 		displayName: "",
 		joinDate: "",
 	},
+	shouldRefresh: 0,
+	gameHistory: [],
+	shouldRefreshGameHistory: 0,
 };
 
 export default (state = initialState, { type, payload }) => {
@@ -22,7 +25,21 @@ export default (state = initialState, { type, payload }) => {
 				...state,
 				...payload,
 			};
-
+		case PROFILE_ACTIONS.REFRESH_PROFILE:
+			return {
+				...state,
+				shouldRefresh: new Date().getTime(),
+			};
+		case PROFILE_ACTIONS.GET_GAME_HISTORY:
+			return {
+				...state,
+				gameHistory: payload.data,
+			};
+		case PROFILE_ACTIONS.REFRESH_GAME_HISTORY:
+			return {
+				...state,
+				shouldRefreshGameHistory: new Date().getTime(),
+			};
 		default:
 			return state;
 	}

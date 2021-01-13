@@ -1,11 +1,11 @@
-import { Button, Form, Input } from "antd";
-import React from "react";
-import "./style.scss";
-import moment from "moment";
+import { getUserInfo } from "@/actions/profile";
 import useAuth from "@/hooks/useAuth";
 import useAxios from "@/hooks/useAxios";
+import { Button, Form, Input } from "antd";
+import moment from "moment";
+import React from "react";
 import { useDispatch } from "react-redux";
-import { getUserInfo } from "@/actions/profile";
+import "./style.scss";
 
 const UserInfo = () => {
 	const { user } = useAuth();
@@ -35,19 +35,19 @@ const UserInfo = () => {
 			>
 				<Form.Item
 					name="displayName"
-					label="Display Name"
+					label="Tên hiển thị"
 					rules={[{ required: true }]}
 				>
-					<Input size="large" />
+					<Input />
 				</Form.Item>
 				<Form.Item name="email" label="Email">
-					<Input size="large" readOnly />
+					<Input readOnly />
 				</Form.Item>
 				<Form.Item name="joinDate" label="Ngày tham gia">
-					<Input size="large" readOnly />
+					<Input readOnly />
 				</Form.Item>
 				<div className="button">
-					<Button type="primary" htmlType="submit" size="large" shape="round">
+					<Button type="primary" htmlType="submit" shape="round">
 						Cập nhật thông tin
 					</Button>
 				</div>

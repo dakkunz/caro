@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import game from "./game";
+import gameReplay from "./gameReplay";
 import onlineUsers from "./onlineUsers";
 import profile from "./profile";
 import ranking from "./ranking";
@@ -15,4 +16,5 @@ export default combineReducers({
 	roomList,
 	profile,
 	ranking,
+	gameReplay,
 });

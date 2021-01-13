@@ -1,23 +1,14 @@
 .profile-wrapper .user-info-wrapper {
 	border-radius: 10px;
 	border: solid #40a9ff 1px;
-	padding: 30px;
+	padding: 10px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	label {
-		font-size: 20px;
-	}
-	input {
-		height: 50px;
-		font-size: 20px;
-	}
 	.button {
 		text-align: center;
 		button {
-			width: 30%;
-			font-size: 20px;
-			height: 50px;
+			width: 50%;
 		}
 	}
 }

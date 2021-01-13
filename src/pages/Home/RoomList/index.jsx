@@ -34,7 +34,7 @@ const RoomList = () => {
 	return (
 		<div className="room-list-wrapper">
 			<div className="title">
-				<h2>Game Rooms</h2>
+				<h2>Danh sách phòng</h2>
 				<Input.Search
 					onSearch={(value) =>
 						setFilteredList(

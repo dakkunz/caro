@@ -11,11 +11,11 @@ const RoomModal = ({ show, hide }) => {
 
 	return (
 		<Modal
-			title="Create Room"
+			title="Tạo phòng"
 			centered
 			width={400}
 			closable
-			okText="Create"
+			okText="Tạo"
 			onCancel={hide}
 			visible={show}
 			onOk={() => {
@@ -39,11 +39,11 @@ const RoomModal = ({ show, hide }) => {
 				<Form.Item
 					name="roomName"
 					rules={[{ required: true }]}
-					label="Room Name"
+					label="Tên phòng"
 				>
 					<Input />
 				</Form.Item>
-				<Form.Item name="password" label="Password">
+				<Form.Item name="password" label="Mật khẩu">
 					<Input.Password />
 				</Form.Item>
 				<Form.Item name="time" label="Timeout">

@@ -10,7 +10,7 @@ const AuthenticatingIndicator = () => (
 	<div className="authenticating-indicator-wrapper">
 		<Spin
 			indicator={<LoadingOutlined className="loading-icon" />}
-			tip="...Authenticating"
+			tip="...Kiểm tra đăng nhập"
 		/>
 	</div>
 );

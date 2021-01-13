@@ -10,7 +10,7 @@ const LoadingIndicator = () => (
 	<div className="loading-indicator-wrapper">
 		<Spin
 			indicator={<LoadingOutlined className="loading-icon" />}
-			tip="...Loading"
+			tip="...Đang tải"
 		/>
 	</div>
 );

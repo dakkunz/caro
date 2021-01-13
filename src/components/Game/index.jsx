@@ -15,7 +15,7 @@ import Config from "@/constants/configs";
 import useAxios from "@/hooks/useAxios";
 import { useEventClick, useEventTime } from "@/hooks/useEvent";
 import useSocket from "@/hooks/useSocket";
-import { useAuth0 } from "@auth0/auth0-react";
+import useAuth from "@/hooks/useAuth";
 import { Modal } from "antd";
 import React, { useEffect, useState } from "react";
 import { Button, Card } from "react-bootstrap";
@@ -29,7 +29,7 @@ import Timer from "./components/Timer";
 import "./styles.scss";
 
 const Game = (props) => {
-  const { user } = useAuth0();
+  const { user } = useAuth();
   const axios = useAxios();
 
   const { actions } = props;
@@ -236,8 +236,14 @@ const Game = (props) => {
 
         axios
           .post("/games/save", {
-            xPlayer: isPlayerX ? user.sub : rival.sub,
-            oPlayer: !isPlayerX ? user.sub : rival.sub,
+			xPlayer: {
+				sub: isPlayerX ? user.sub : rival.sub,
+				displayName: isPlayerX ? user.displayName : rival.displayName,
+			},
+			oPlayer: {
+				sub: !isPlayerX ? user.sub : rival.sub,
+				displayName:!isPlayerX ? user.displayName : rival.displayName,
+			},
             history,
             chatHistory,
             winCells,
@@ -521,7 +527,7 @@ const Game = (props) => {
                 Bạn là {isPlayerX ? `X` : `O`}
               </Card.Title>
               <Card.Text className="card-text-bold">
-                <b>{user.name}</b>
+                <b>{user.displayName}</b>
               </Card.Text>
               <img src={user.picture} className="avatar-small" alt="avatar" />
               <br></br>
@@ -593,7 +599,7 @@ const Game = (props) => {
         </div>
         <div>
           {!isEndGame && <Timer setIsOverTime={setIsOverTime} />}
-          <Chat socket={socket} rivalName={rival.name} />
+          <Chat socket={socket} rivalName={rival.displayName} />
         </div>
       </div>
       {socket && <GameSocket />}

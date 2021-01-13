@@ -340,18 +340,18 @@ const Game = (props) => {
     coorX -= 1;
     while (coorX >= 0 && squares[coorX][coorY] === user) {
       countCol += 1;
-      winCells.push([coorX, coorY]);
+      winCells.push({coorX, coorY});
       coorX -= 1;
     }
     if (coorX >= 0 && squares[coorX][coorY] !== rival) {
       isBlock = false;
     }
     coorX = row;
-    winCells.push([coorX, coorY]);
+    winCells.push({coorX, coorY});
     coorX += 1;
     while (coorX <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
       countCol += 1;
-      winCells.push([coorX, coorY]);
+      winCells.push({coorX, coorY});
       coorX += 1;
     }
     if (coorX <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
@@ -365,18 +365,18 @@ const Game = (props) => {
     coorY -= 1;
     while (coorY >= 0 && squares[coorX][coorY] === user) {
       countRow += 1;
-      winCells.push([coorX, coorY]);
+      winCells.push({coorX, coorY});
       coorY -= 1;
     }
     if (coorY >= 0 && squares[coorX][coorY] !== rival) {
       isBlock = false;
     }
     coorY = col;
-    winCells.push([coorX, coorY]);
+    winCells.push({coorX, coorY});
     coorY += 1;
     while (coorY <= Config.brdSize - 1 && squares[coorX][coorY] === user) {
       countRow += 1;
-      winCells.push([coorX, coorY]);
+      winCells.push({coorX, coorY});
       coorY += 1;
     }
     if (coorY <= Config.brdSize - 1 && squares[coorX][coorY] !== rival) {
@@ -391,7 +391,7 @@ const Game = (props) => {
     coorY -= 1;
     while (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] === user) {
       countMainDiagonal += 1;
-      winCells.push([coorX, coorY]);
+      winCells.push({coorX, coorY});
       coorX -= 1;
       coorY -= 1;
     }
@@ -400,7 +400,7 @@ const Game = (props) => {
     }
     coorX = row;
     coorY = col;
-    winCells.push([coorX, coorY]);
+    winCells.push({coorX, coorY});
     coorX += 1;
     coorY += 1;
     while (
@@ -409,7 +409,7 @@ const Game = (props) => {
       squares[coorX][coorY] === user
     ) {
       countMainDiagonal += 1;
-      winCells.push([coorX, coorY]);
+      winCells.push({coorX, coorY});
       coorX += 1;
       coorY += 1;
     }
@@ -430,7 +430,7 @@ const Game = (props) => {
     coorY += 1;
     while (coorX >= 0 && coorY >= 0 && squares[coorX][coorY] === user) {
       countSkewDiagonal += 1;
-      winCells.push([coorX, coorY]);
+      winCells.push({coorX, coorY});
       coorX -= 1;
       coorY += 1;
     }
@@ -439,7 +439,7 @@ const Game = (props) => {
     }
     coorX = row;
     coorY = col;
-    winCells.push([coorX, coorY]);
+    winCells.push({coorX, coorY});
     coorX += 1;
     coorY -= 1;
     while (
@@ -448,7 +448,7 @@ const Game = (props) => {
       squares[coorX][coorY] === user
     ) {
       countSkewDiagonal += 1;
-      winCells.push([coorX, coorY]);
+      winCells.push({coorX, coorY});
       coorX += 1;
       coorY -= 1;
     }

@@ -1,5 +1,22 @@
 .game-replay-wrapper {
 	display: grid;
-	grid-template-columns: 1fr 2fr 1fr;
+	grid-template-columns: 350px auto 450px;
 	column-gap: 10px;
+	height: 100%;
+	.left {
+		justify-self: center;
+		align-self: center;
+		width: 100%;
+	}
+	.center {
+		text-align: center;
+		> * + * {
+			margin-top: 10px;
+		}
+	}
+}
+
+.ant-spin-nested-loading,
+.ant-spin-container {
+	height: 100%;
 }

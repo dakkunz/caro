@@ -1,15 +1,11 @@
-const { GAME_REPLAY_ACTIONS } = require("@/constants/actionTypes");
+import { GAME_REPLAY_ACTION_TYPES } from "@/constants/actionTypes";
 
-export const getGameReplay = (game) => ({
-	type: GAME_REPLAY_ACTIONS.GET_GAME_REPLAY,
-	payload: game,
+export const fetchGameReplaySuccess = (data) => ({
+	type: GAME_REPLAY_ACTION_TYPES.FETCH_GAME_REPLAY,
+	payload: data,
 });
 
-export const setStep = (step) => ({
-	type: GAME_REPLAY_ACTIONS.SET_STEP,
+export const setReplayStep = (step) => ({
+	type: GAME_REPLAY_ACTION_TYPES.SET_STEP,
 	payload: step,
-});
-
-export const replayResetReducer = () => ({
-	type: GAME_REPLAY_ACTIONS.RESET_REDUCER,
 });

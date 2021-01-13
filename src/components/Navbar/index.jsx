@@ -1,11 +1,11 @@
 // libs
+import useAuth from "@/hooks/useAuth";
+import useSocket from "@/hooks/useSocket";
 import { Avatar, Dropdown, Menu } from "antd";
 import React from "react";
+import { Link, useHistory } from "react-router-dom";
 // others
 import "./styles.scss";
-import useSocket from "@/hooks/useSocket";
-import { useHistory } from "react-router-dom";
-import useAuth from "@/hooks/useAuth";
 
 const Navbar = () => {
 	const { user, logout } = useAuth();
@@ -18,13 +18,17 @@ const Navbar = () => {
 	return (
 		<div className="navbar-wrapper">
 			<div className="left">
-				<h1>CARONA</h1>
+				<Link to="/">
+					<h1>CARONA</h1>
+				</Link>
 			</div>
 			<div className="right">
 				<Dropdown
 					overlay={
 						<Menu>
-							<Menu.Item onClick={() => push("/profile")}>Thông tin tài khoản</Menu.Item>
+							<Menu.Item onClick={() => push("/profile")}>
+								Thông tin tài khoản
+							</Menu.Item>
 							<Menu.Item onClick={submitLogout}>Đăng xuất</Menu.Item>
 						</Menu>
 					}

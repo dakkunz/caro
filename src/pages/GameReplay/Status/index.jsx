@@ -1,48 +1,26 @@
-import React from 'react';
-import Config from '@/constants/configs';
+import React from "react";
+import { useSelector } from "react-redux";
+import "./style.scss";
 
-const Status = (props) => {
-    const { winCells } = props;
-    const { rivalName } = props;
-    const { winner } = props;
-    const {isPlayerX} = props;
-    const { messages } = props;
-    const {isOverTime} = props;
-    
-    let message;
+const Status = () => {
+	const {
+		data: { history = [], xPlayer, oPlayer, winner, isDraw },
+		step = 0,
+	} = useSelector((state) => state.gameReplay);
 
-    if (rivalName === 'DISCONNECTED') {
-        message = 'Đối thủ đã thoát!';
-    }
-    else if (messages) {
-        message = messages;
-    }else if(isOverTime){
-        message = `Đối thủ quá giờ, bạn đã thắng !`;
+	let result;
+	if (isDraw) result = "Hòa";
+	else
+		result =
+			"Thắng cuộc: " +
+			(winner === xPlayer.sub ? xPlayer.displayName : oPlayer.displayName);
 
-        if ((isPlayerX && winner === Config.oPlayer) || (!isPlayerX && winner === Config.xPlayer)) {
-            message = `Hết thời gian, bạn đã thua !`;
-        }
-    }
-    else if (winCells) {
-        message = `Chúc mừng, bạn đã thắng !`;
-
-        if ((isPlayerX && winner === Config.oPlayer) || (!isPlayerX && winner === Config.xPlayer)) {
-            message = `Rất tiếc, bạn đã thua !`;
-        }
-    }
-    else {
-        const player = props.nextMove === Config.xPlayer ? Config.oPlayer : Config.xPlayer;
-
-        if ((isPlayerX && player === Config.oPlayer) || (!isPlayerX && player === Config.xPlayer)) {
-            message = `Tới lượt bạn!`;
-        }else{
-            message = `Tới lượt đối thủ`;
-        }
-    }
-    return (
-        <div className='status'><b>{message}</b></div>
-    )
-}
-
+	return (
+		<div className="status-wrapper" style={{ textAlign: "center" }}>
+			<h3 style={{ height: 30, color: "#87d068" }}>
+				{step === history.length - 1 && result}
+			</h3>
+		</div>
+	);
+};
 export default Status;
-

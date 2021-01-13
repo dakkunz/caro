@@ -1,0 +1,11 @@
+.game-replay-wrapper .chat-area-wrapper {
+	margin: 20px 0;
+	.ant-card {
+		height: 100%;
+		.ant-card-body {
+			overflow-x: hidden;
+			overflow-y: auto;
+			height: 600px;
+		}
+	}
+}

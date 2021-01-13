@@ -5,21 +5,20 @@ import { columns } from "@/pages/Profile/GameHistory/tableCols";
 import { Table } from "antd";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import "./style.scss";
 
 const GameHistory = () => {
 	const { gameHistory, shouldRefreshGameHistory } = useSelector(
 		(state) => state.profile
 	);
-	const { push } = useHistory();
+
 	const { user } = useAuth();
 	const axios = useAxios();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		axios
-			.get("/games/" + user.sub)
+			.get("/games/by-user/" + user.sub)
 			.then((res) => dispatch(getUserGameHistory(res.data.games)))
 			.catch(() => dispatch(getUserGameHistory([])));
 	}, [axios, user.sub, shouldRefreshGameHistory, dispatch]);
@@ -36,7 +35,7 @@ const GameHistory = () => {
 				rowKey={(game) => game.id}
 				onRow={(game) => ({
 					onClick: () => {
-						push("/game-replay/" + game.id);
+						window.open(window.origin + "/game-replay/" + game.id);
 					},
 				})}
 			/>

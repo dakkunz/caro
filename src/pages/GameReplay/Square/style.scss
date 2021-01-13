@@ -1,0 +1,13 @@
+.game-replay-wrapper .square-wrapper {
+	width: 32px;
+	height: 32px;
+	font-weight: bold;
+	padding: 0;
+	font-size: 20px;
+	&.current {
+		background-color: #ffd591;
+	}
+	&.win-cell {
+		background-color: #87d068;
+	}
+}

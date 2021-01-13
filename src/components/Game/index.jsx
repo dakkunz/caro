@@ -531,7 +531,7 @@ const Game = (props) => {
 						>
 							Thoát game
 						</Button>
-						{isEndGame && rival && (
+						{isEndGame && rival.name !== "DISCONNECTED" && (
 							<Button
 								className="logout-button"
 								variant="danger"

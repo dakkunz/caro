@@ -1,4 +1,3 @@
-import { getGameReplay } from "@/actions/gameReplay";
 import { getUserGameHistory } from "@/actions/profile";
 import useAuth from "@/hooks/useAuth";
 import useAxios from "@/hooks/useAxios";
@@ -37,7 +36,6 @@ const GameHistory = () => {
 				rowKey={(game) => game.id}
 				onRow={(game) => ({
 					onClick: () => {
-						dispatch(getGameReplay(game));
 						push("/game-replay/" + game.id);
 					},
 				})}

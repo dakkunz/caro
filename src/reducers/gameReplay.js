@@ -1,25 +1,23 @@
-import { GAME_REPLAY_ACTIONS } from "@/constants/actionTypes";
+import { GAME_REPLAY_ACTION_TYPES } from "@/constants/actionTypes";
 
-/* eslint-disable import/no-anonymous-default-export */
 const initialState = {
-	game: null,
+	data: null,
 	step: 0,
 };
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default (state = initialState, { type, payload }) => {
 	switch (type) {
-		case GAME_REPLAY_ACTIONS.GET_GAME_REPLAY:
+		case GAME_REPLAY_ACTION_TYPES.FETCH_GAME_REPLAY:
 			return {
-				game: payload,
-				step: 0,
+				...state,
+				data: payload,
 			};
-		case GAME_REPLAY_ACTIONS.SET_STEP:
+		case GAME_REPLAY_ACTION_TYPES.SET_STEP:
 			return {
 				...state,
 				step: payload,
 			};
-		case GAME_REPLAY_ACTIONS.RESET_REDUCER:
-			return initialState;
 		default:
 			return state;
 	}

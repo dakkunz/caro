@@ -29,12 +29,10 @@ const RoomActionSocket = () => {
 				.off("join-room-quick-success")
 				.off("join-room-fail")
 				.off("pair-success")
-				.off("join-room-quick-fail")
 				.on(SOCKET_TYPES.JOIN_ROOM_SUCCESS, handleJoinRoomSuccess)
 				.on("join-room-quick-success", handleJoinRoomSuccess)
 				.on("join-room-fail", handleJoinRoomFail)
 				.on("pair-success", handlePairSuccess)
-				.on("join-room-quick-fail", handleJoinRoomFail)
 		}
 		return () => {};
 	}, [dispatch, replace, socket]);

@@ -1,5 +1,6 @@
 import useSocket from "@/hooks/useSocket";
 import { Modal } from "antd";
+import {message} from "antd";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -14,6 +15,7 @@ const InviteRoomSocket = () => {
 			Modal.confirm({
 				title: roomInfo.host.nickname + " mời bạn vào phòng!",
 				onOk: () => {
+					console.log("da chap nhan");
 					socket.emit("reply-invite-request", {
 						isAccept: true,
 						roomInfo,
@@ -28,10 +30,16 @@ const InviteRoomSocket = () => {
 			});
 		};
 
+		const declineReplyJoinRoom = (mes) => {
+			message.error(mes);
+		}
+
 		if (socket) {
+			socket.off("receive-invite-request");
 			socket.on("receive-invite-request", handleReceiveInvite);
+			socket.off("decline-reply-join-room");
+			socket.on("decline-reply-join-room", declineReplyJoinRoom)
 			return () => {
-				socket.off("receive-invite-request", handleReceiveInvite);
 			};
 		}
 	}, [dispatch, replace, socket]);

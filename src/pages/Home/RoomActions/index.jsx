@@ -14,13 +14,11 @@ const RoomActions = () => {
 	const socket = useSocket();
 
 	const handleQuickPlay = () => {
-		// findRival();
 		setShowQuickPlay(true);
 	};
 
 	const cancelFinRival = () => {
 		setShowQuickPlay(false);
-		// socket.emit("cancel-join-room-quick", props.user);
 	};
 
 	return (

@@ -1,4 +1,4 @@
-import { setReplayStep } from "@/actions/GameReplay";
+import { setReplayStep } from "@/actions/gameReplay";
 import {
 	FastBackwardOutlined,
 	FastForwardOutlined,

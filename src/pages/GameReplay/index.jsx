@@ -1,4 +1,4 @@
-import { fetchGameReplaySuccess } from "@/actions/GameReplay";
+import { fetchGameReplaySuccess } from "@/actions/gameReplay";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import useAxios from "@/hooks/useAxios";
 import useRouter from "@/hooks/useRouter";

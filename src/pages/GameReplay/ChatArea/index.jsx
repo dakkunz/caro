@@ -24,8 +24,7 @@ const ChatArea = () => {
 							style={{ margin: "5px 0", whiteSpace: "pre-wrap" }}
 						>
 							<Tag color={color}>{senderName}</Tag>
-							{chat.message +
-								"1111 11 1111 111 1111 1111111 11111 11111111  1111 111 111111"}
+							{chat.message}
 						</div>
 					);
 				})}

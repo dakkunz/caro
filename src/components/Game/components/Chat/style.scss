@@ -1,0 +1,16 @@
+.chat-area-wrapper {
+	.ant-card {
+		width: 100%;
+		height: 100%;
+		.ant-card-body {
+			display: grid;
+			grid-template-rows: 0 500px auto;
+			row-gap: 5px;
+			.chat-container {
+				overflow-x: hidden;
+				overflow-y: auto;
+				text-align: left;
+			}
+		}
+	}
+}

@@ -4,7 +4,7 @@ import {
 } from "@/actions/onlineUsers";
 import useAxios from "@/hooks/useAxios";
 import { LoadingOutlined, TrophyOutlined } from "@ant-design/icons";
-import { message, Modal, Spin, Tag } from "antd";
+import { message, Modal, Progress, Spin, Tag } from "antd";
 import Avatar from "antd/lib/avatar/avatar";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,20 +55,20 @@ const ProfileModal = ({ show, hide, userSub }) => {
 						<TrophyOutlined /> <span>{point}</span>
 					</div>
 					<div className="rate">
-						{/* <Progress
+						<Progress
 							type="circle"
 							status="active"
-							percent={((win + draw) / total) * 100}
-							success={{ percent: (win / total) * 100 }}
-							format={(percent, successPercent) => (
+							percent={(win / total) * 100}
+							// success={{ percent: (win / total) * 100 }}
+							format={(percent) => (
 								<span style={{ fontSize: 16 }}>
-									{Math.round(successPercent)}%<br />
+									{Math.round(percent)}%<br />
 									Tỉ lệ thắng
 								</span>
 							)}
 							trailColor="#ff4d4f"
 							width={100}
-						/> */}
+						/>
 					</div>
 					<div className="count">
 						<Tag color="cyan">{total} trận</Tag>

@@ -1,20 +1,32 @@
-import React from 'react';
-import Config from '@/constants/configs';
-import { Button } from 'react-bootstrap';
+import Config from "@/constants/configs";
+import { playerColorMapping } from "@/pages/GameReplay/mapping";
+import { Button } from "antd";
+import classnames from "classnames";
+import React from "react";
+import "./style.scss";
 
 const Square = (props) => {
-    const { value } = props;
-    const { winCell } = props;
-    const { isCurrentCell } = props;
-    
-    const moveColor = value === Config.xPlayer ? Config.plColor.X : Config.plColor.O;
-    const className = isCurrentCell ? 'square-current' : (winCell === false ? 'square' : 'square-win');
-    return (
-        <Button className={className} variant="dark"
-                onClick={() => props.handleClick(props.row, props.col)}>
-            <font color={moveColor}>{value}</font>
-        </Button>
-    );
-}
+	const { value } = props;
+	const { winCell } = props;
+	const { isCurrentCell } = props;
+
+	return (
+		<Button
+			className={classnames("square-wrapper", {
+				current: isCurrentCell,
+				"win-cell": winCell,
+			})}
+			onClick={() => props.handleClick(props.row, props.col)}
+			style={{
+				color:
+					value === Config.xPlayer
+						? playerColorMapping.X
+						: playerColorMapping.O,
+			}}
+		>
+			{value || " "}
+		</Button>
+	);
+};
 
 export default Square;

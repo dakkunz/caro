@@ -14,4 +14,7 @@ export const Profile = lazy(() => delayImport()(import("@/pages/Profile")));
 export const EmailVerify = lazy(() =>
 	delayImport()(import("@/pages/EmailVerify"))
 );
+export const BlockedUser = lazy(() =>
+	delayImport()(import("@/pages/BlockedUser"))
+);
 export const NotFound = lazy(() => import("@/pages/NotFound"));

@@ -1,17 +1,18 @@
 // libs
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import AppLayout from "@/components/AppLayout";
 // components
 import AuthenticatingIndicator from "@/components/AuthenticatingIndicator";
+import FetchUserInfo from "@/components/FetchUserInfo";
+import RedirectBlockUser from "@/components/RedirectBlockUser";
+import withEmailVerified from "@/hocs/withEmailVerified";
 // hooks
 import SocketProvider from "@/providers/SocketProvider";
 // routers
 import { privateRoutes } from "@/routers";
-import AppLayout from "@/components/AppLayout";
-import withEmailVerified from "@/hocs/withEmailVerified";
-import { EmailVerify } from "@/routers/lazyRoutes";
-import FetchUserInfo from "@/components/FetchUserInfo";
+import { BlockedUser, EmailVerify } from "@/routers/lazyRoutes";
+import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import React from "react";
+import { Route, Switch } from "react-router-dom";
 
 const Main = () => {
 	const { isLoading, error, user } = useAuth0();
@@ -29,6 +30,7 @@ const Main = () => {
 					exact
 					component={EmailVerify}
 				/>
+				<Route key="blocked" path="/blocked" exact component={BlockedUser} />
 				<SocketProvider>
 					<FetchUserInfo />
 					{privateRoutes.map(({ component, ...route }) => (
@@ -39,6 +41,7 @@ const Main = () => {
 							)}
 						/>
 					))}
+					<RedirectBlockUser />
 				</SocketProvider>
 			</Switch>
 		</AppLayout>

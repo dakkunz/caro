@@ -450,7 +450,7 @@ const Game = (props) => {
 	const userClick = (row, col) => {
 		const { nextMove } = props;
 
-		if (isEndGame || isFetching) {
+		if (isEndGame) {
 			return;
 		}
 

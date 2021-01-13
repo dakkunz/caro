@@ -33,11 +33,6 @@ const GameHistory = () => {
 				dataSource={gameHistory}
 				pagination={{ pageSize: 5 }}
 				rowKey={(game) => game.id}
-				onRow={(game) => ({
-					onClick: () => {
-						window.open(window.origin + "/game-replay/" + game.id);
-					},
-				})}
 			/>
 		</div>
 	);

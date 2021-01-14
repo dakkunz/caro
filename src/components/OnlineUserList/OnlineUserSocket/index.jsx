@@ -5,28 +5,29 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 const OnlineUserSocket = () => {
-	const socket = useSocket();
-	const dispatch = useDispatch();
-	const { user } = useAuth();
+  const socket = useSocket();
+  const dispatch = useDispatch();
+  const { user } = useAuth();
 
-	useEffect(() => {
-		console.log("Emit", "get-user-online-list");
-		socket.emit("get-user-online-list");
-	}, [socket]);
+  useEffect(() => {
+    console.log("Emit", "get-user-online-list");
+    socket.emit("get-user-online-list");
+  }, [socket]);
 
-	useEffect(() => {
-		const handleUpdateOnlineList = (list) => {
-			console.log("Receive", "update-user-online-list", list);
-			dispatch(
-				updateOnlineUser(list.filter(({ sub }) => sub && sub !== user.sub))
-			);
-		};
-		socket.off("update-user-online-list");
-		socket.on("update-user-online-list", handleUpdateOnlineList);
-		return () => {
-		};
-	}, [dispatch, socket, user.sub]);
+  useEffect(() => {
+    const handleUpdateOnlineList = (list) => {
+      console.log("Receive", "update-user-online-list", list);
+      dispatch(
+        updateOnlineUser(list.filter(({ sub }) => sub && sub !== user.sub))
+      );
+    };
 
-	return <></>;
+    socket.on("update-user-online-list", handleUpdateOnlineList);
+    return () => {
+      socket.off("update-user-online-list");
+    };
+  }, [dispatch, socket, user.sub]);
+
+  return <></>;
 };
 export default OnlineUserSocket;

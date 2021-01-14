@@ -21,10 +21,10 @@ const InviteUserSocket = () => {
 				updateOnlineUser(list.filter(({ sub }) => sub && sub !== user.sub))
 			);
 		};
-
+		socket.off("update-user-online-list");
 		socket.on("update-user-online-list", handleUpdateOnlineList);
 		return () => {
-			socket.off("update-user-online-list", handleUpdateOnlineList);
+
 		};
 	}, [dispatch, socket, user.sub]);
 

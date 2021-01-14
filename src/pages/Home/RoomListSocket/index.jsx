@@ -16,9 +16,9 @@ const RoomListSocket = () => {
 			console.log({ list });
 			dispatch(updateRoomList(list));
 		};
+		socket.off("get-current-room-list");
 		socket.on("get-current-room-list", handleGetRoomList);
 		return () => {
-			socket.off("get-current-room-list", handleGetRoomList);
 		};
 	}, [dispatch, socket]);
 
